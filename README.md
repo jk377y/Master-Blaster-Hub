@@ -1,1 +1,1 @@
-testing after adding 2nd remote repository and pushing to it. This is to check that the 2nd remote repository is working correctly and that the changes are reflected in the 2nd remote repository.
+This is to check that the 2nd remote repository is working correctly and that the changes are reflected in the 2nd remote repository.
