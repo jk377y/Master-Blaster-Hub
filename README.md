@@ -1,1 +1,2 @@
-This is to check that the 2nd remote repository is working correctly and that the changes are reflected in the 2nd remote repository.
+# Master Blaster Hub
+Live URL: <a href="https://www.masterblasterhub.com/">Master Blaster Hub</a>
