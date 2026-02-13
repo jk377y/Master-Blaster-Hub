@@ -1,28 +1,26 @@
-name: Deploy Frontend to S3
+name: Deploy Frontend
 
 on:
   push:
     branches:
       - working_branch
     # paths:
-    #   - 'frontend/**'
+    # - 'frontend/**'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: frontend
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Install dependencies
+        working-directory: MBH/frontend
         run: npm install
 
-      - name: Build React app
+      - name: Build frontend
+        working-directory: MBH/frontend
         run: npm run build
 
       - name: Configure AWS credentials
@@ -32,8 +30,5 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Sync to S3
-        run: aws s3 sync /dist s3://masterblasterhub.com --delete
-
-      - name: Invalidate CloudFront cache
-        run: aws cloudfront create-invalidation --distribution-id E1A22PXBJNU6MX --paths "/*"
+      - name: Deploy to S3
+        run: aws s3 sync MBH/frontend/dist s3://masterblasterhub.com --delete
