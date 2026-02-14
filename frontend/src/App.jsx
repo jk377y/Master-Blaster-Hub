@@ -27,7 +27,7 @@ export const App = () => {
                 <Route path="/login" element={<AuthPage />} />
 
                 <Route
-                    path="/portal"
+                    path="/myportal"
                     element={
                         <ProtectedRoute user={user} allowedRoles={["customer", "admin"]}>
                             <MyPortal />
