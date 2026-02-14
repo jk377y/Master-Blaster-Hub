@@ -5,7 +5,7 @@ export const MyPortal = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://44.223.36.86:8080/api/users")
+    fetch("https://api.masterblasterhub.com/api/users")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch users");
