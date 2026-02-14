@@ -39,7 +39,7 @@ export const Header = () => {
                     <Link to="/admin" className={styles.link}>Admin</Link>
                     <span className={styles.span}>|</span>
 
-                    <Link to="/portal" className={styles.link}>MyPortal</Link>
+                    <Link to="/myportal" className={styles.link}>MyPortal</Link>
                 </nav>
             </div>
 
