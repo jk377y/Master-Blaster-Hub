@@ -31,7 +31,17 @@ public class DatabaseResetService {
     }
 
     private void seedMasterAdmin() {
-        // will implement
+        com.mbh.backend.models.User masterAdmin = new com.mbh.backend.models.User();
+        masterAdmin.setEmail("masteradmin@masterblasterhub.com");
+        masterAdmin.setPasswordHash("TEMP_PASSWORD_HASH"); //! temporary: replace this later when i implement real password hashing
+        masterAdmin.setFirstName("Master");
+        masterAdmin.setLastName("Admin");
+        masterAdmin.setRole(com.mbh.backend.models.Role.ADMIN);
+        masterAdmin.setIsActive(true);
+        masterAdmin.setIsSystemAccount(true);  //! this account should not be deleted or modified by any other users
+        masterAdmin.setCreatedAt(java.time.Instant.now());
+        masterAdmin.setAddresses(java.util.Collections.emptyList());
+    userRepository.save(masterAdmin);
     }
 
     private void seedServices() {
