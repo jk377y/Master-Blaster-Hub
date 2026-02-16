@@ -11,10 +11,10 @@ import { ProtectedRoute } from "./components/routing/ProtectedRoute";
 
 const user = {
     // for testing customer access
-    role: "customer" 
+    // role: "customer" 
     
     // for testing admin access
-    // role: "admin" 
+    role: "admin" 
 };
 
 export const App = () => {

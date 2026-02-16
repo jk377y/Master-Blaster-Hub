@@ -45,10 +45,18 @@ public class DatabaseResetService {
     }
 
     private void seedServices() {
-        // will implement
+        serviceRepository.saveAll(
+            SeedDataFactory.buildDefaultServices() //! this is where my mock data for services is coming from
+    );
     }
 
     private void seedMockUsers() {
-        // will implement
+        // fetch services AFTER they’ve been saved to database so they have IDs for the job history
+        java.util.List<com.mbh.backend.models.Service> services =
+                serviceRepository.findAll();
+        // build mock users using factory
+        java.util.List<com.mbh.backend.models.User> mockUsers =
+                SeedDataFactory.buildMockUsers(services);
+        userRepository.saveAll(mockUsers);
     }
 }
