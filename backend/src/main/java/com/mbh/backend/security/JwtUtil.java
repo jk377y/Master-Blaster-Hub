@@ -1,5 +1,7 @@
 package com.mbh.backend.security;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,5 +26,29 @@ public class JwtUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
                 .signWith(key)
                 .compact();
+    }
+    public String extractEmail(String token) {
+        return extractAllClaims(token).getSubject();
+    }
+    public String extractRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
+    }
+    public String extractFirstName(String token) {
+        return extractAllClaims(token).get("firstName", String.class);
+    }
+    public boolean isTokenValid(String token) {
+        try {
+            extractAllClaims(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
