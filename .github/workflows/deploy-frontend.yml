@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - working_branch
-    paths:
-      - 'frontend/**'
-      - 'frontend/index.html'
+    # paths:
+    #   - 'frontend/**'
+    #   - 'frontend/index.html'
 
 jobs:
   deploy:

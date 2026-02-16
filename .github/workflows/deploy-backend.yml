@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - working_branch
-    paths:
-      - 'backend/**'
+    # paths:
+    #   - 'backend/**'
 
 jobs:
   deploy:
