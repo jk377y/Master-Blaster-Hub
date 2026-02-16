@@ -2,6 +2,8 @@ package com.mbh.backend.services;
 
 import com.mbh.backend.repositories.UserRepository;
 import com.mbh.backend.repositories.ServiceRepository;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -9,11 +11,14 @@ public class DatabaseResetService {
 
     private final UserRepository userRepository;
     private final ServiceRepository serviceRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public DatabaseResetService(UserRepository userRepository,
-                                ServiceRepository serviceRepository) {
+                                ServiceRepository serviceRepository,
+                                PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.serviceRepository = serviceRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void resetDatabase() {
@@ -33,7 +38,7 @@ public class DatabaseResetService {
     private void seedMasterAdmin() {
         com.mbh.backend.models.User masterAdmin = new com.mbh.backend.models.User();
         masterAdmin.setEmail("masteradmin@masterblasterhub.com");
-        masterAdmin.setPasswordHash("TEMP_PASSWORD_HASH"); //! temporary: replace this later when i implement real password hashing
+        masterAdmin.setPasswordHash(passwordEncoder.encode("password123")); //! temporary: replace this later when i implement real password hashing
         masterAdmin.setFirstName("Master");
         masterAdmin.setLastName("Admin");
         masterAdmin.setRole(com.mbh.backend.models.Role.ADMIN);
@@ -56,7 +61,7 @@ public class DatabaseResetService {
                 serviceRepository.findAll();
         // build mock users using factory
         java.util.List<com.mbh.backend.models.User> mockUsers =
-                SeedDataFactory.buildMockUsers(services);
+            SeedDataFactory.buildMockUsers(services, passwordEncoder);
         userRepository.saveAll(mockUsers);
     }
 }

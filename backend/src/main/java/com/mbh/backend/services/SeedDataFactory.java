@@ -1,16 +1,19 @@
 package com.mbh.backend.services;
 
 import com.mbh.backend.models.*;
+
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 public class SeedDataFactory {
-
+    
     public static List<Service> buildDefaultServices() {
-
+        
         Service driveway = new Service();
         driveway.setName("Driveway Cleaning");
         driveway.setCategory("Exterior");
@@ -19,7 +22,7 @@ public class SeedDataFactory {
         driveway.setBasePrice(0.25);
         driveway.setMinimumCharge(150.0);
         driveway.setIsActive(true);
-
+        
         Service houseWash = new Service();
         houseWash.setName("House Soft Wash");
         houseWash.setCategory("Exterior");
@@ -28,7 +31,7 @@ public class SeedDataFactory {
         houseWash.setBasePrice(0.18);
         houseWash.setMinimumCharge(200.0);
         houseWash.setIsActive(true);
-
+        
         Service patio = new Service();
         patio.setName("Patio Cleaning");
         patio.setCategory("Exterior");
@@ -37,7 +40,7 @@ public class SeedDataFactory {
         patio.setBasePrice(0.22);
         patio.setMinimumCharge(125.0);
         patio.setIsActive(true);
-
+        
         Service gutter = new Service();
         gutter.setName("Gutter Cleaning");
         gutter.setCategory("Roofing");
@@ -46,7 +49,7 @@ public class SeedDataFactory {
         gutter.setBasePrice(175.0);
         gutter.setMinimumCharge(175.0);
         gutter.setIsActive(true);
-
+        
         Service fence = new Service();
         fence.setName("Fence Washing");
         fence.setCategory("Exterior");
@@ -55,22 +58,23 @@ public class SeedDataFactory {
         fence.setBasePrice(0.20);
         fence.setMinimumCharge(100.0);
         fence.setIsActive(true);
-
+        
         return List.of(driveway, houseWash, patio, gutter, fence);
     }
-
+    
     /**
      * i need to seed some mock users with addresses and job history to test the app with more realistic data. 
      * this will create 25 users with 1–2 addresses each, and each address will have 0–3 random jobs from the 
      * seeded services. this should give me a good variety of data to work with for while testing and developing.
-     */
-    public static List<User> buildMockUsers(List<Service> services) {
-        List<User> users = new ArrayList<>();
+    */
+   public static List<User> buildMockUsers(List<Service> services, PasswordEncoder passwordEncoder) {
+    
+    List<User> users = new ArrayList<>();
         Random random = new Random();
         for (int i = 1; i <= 25; i++) {
             User user = new User();
             user.setEmail("user" + i + "@test.com");
-            user.setPasswordHash("TEMP_PASSWORD_HASH");
+            user.setPasswordHash(passwordEncoder.encode("password123"));
             user.setFirstName("User");
             user.setLastName("Number" + i);
             user.setRole(Role.CUSTOMER);

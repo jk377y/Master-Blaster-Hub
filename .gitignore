@@ -1,0 +1,4 @@
+backend/.env
+.vscode/
+backup/
+node_modules/
