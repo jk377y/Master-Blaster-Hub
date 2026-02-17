@@ -14,21 +14,21 @@ export const Admin = () => {
             setIsResetting(true);
             setResetMessage("");
             //! production endpoint
-            // const response = await fetch("https://api.masterblasterhub.com/api/admin/reset", {
-            //     method: "POST",
-            //     headers: {
-            //         "Content-Type": "application/json",
-            //         "Authorization": `Bearer ${getToken()}`
-            //     }
-            // });
-            //! local testing endpoint
-            const response = await fetch("http://localhost:8080/api/admin/reset", {
+            const response = await fetch("https://api.masterblasterhub.com/api/admin/reset", {
                 method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+                headers: {
+                    "Content-Type": "application/json",
                     "Authorization": `Bearer ${getToken()}`
-            }
+                }
             });
+            //! local testing endpoint
+            // const response = await fetch("http://localhost:8080/api/admin/reset", {
+            //     method: "POST",
+            // headers: {
+            //     "Content-Type": "application/json",
+            //         "Authorization": `Bearer ${getToken()}`
+            // }
+            // });
 
             if (!response.ok) {
                 throw new Error("Reset failed");
