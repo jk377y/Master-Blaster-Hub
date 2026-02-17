@@ -74,7 +74,7 @@ public class SeedDataFactory {
         for (int i = 1; i <= 25; i++) {
             User user = new User();
             user.setEmail("user" + i + "@test.com");
-            user.setPasswordHash(passwordEncoder.encode("password123"));
+            user.setPasswordHash(passwordEncoder.encode("pw"));
             user.setFirstName("User");
             user.setLastName("Number" + i);
             user.setRole(Role.CUSTOMER);

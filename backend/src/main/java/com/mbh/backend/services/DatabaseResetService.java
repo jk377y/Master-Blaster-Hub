@@ -38,7 +38,7 @@ public class DatabaseResetService {
     private void seedMasterAdmin() {
         com.mbh.backend.models.User masterAdmin = new com.mbh.backend.models.User();
         masterAdmin.setEmail("masteradmin@masterblasterhub.com");
-        masterAdmin.setPasswordHash(passwordEncoder.encode("password123")); //! temporary: replace this later when i implement real password hashing
+        masterAdmin.setPasswordHash(passwordEncoder.encode("pw")); //! temporary: replace this later when i implement real password hashing
         masterAdmin.setFirstName("Master");
         masterAdmin.setLastName("Admin");
         masterAdmin.setRole(com.mbh.backend.models.Role.ADMIN);

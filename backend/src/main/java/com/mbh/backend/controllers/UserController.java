@@ -1,5 +1,6 @@
 package com.mbh.backend.controllers;
 
+import com.mbh.backend.models.Address;
 import com.mbh.backend.models.User;
 import com.mbh.backend.repositories.UserRepository;
 
@@ -24,6 +25,20 @@ public class UserController {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return ResponseEntity.ok(user);
     }
+
+    @PostMapping("/address")
+    public User addAddress(@RequestBody Address newAddress,
+                       Authentication authentication) {
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        newAddress.setId(java.util.UUID.randomUUID().toString());
+    if (user.getAddresses() == null) {
+        user.setAddresses(new java.util.ArrayList<>());
+    }
+    user.getAddresses().add(newAddress);
+    return userRepository.save(user);
+}
 
     // used early for testing, disabled since adding authentication logic
     // @GetMapping("/users")
