@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getUserFirstName, getUserRole, saveAuth } from "../../utils/auth";
+import { getUserRole, saveAuth } from "../../utils/auth";
 import styles from "./AuthPage.module.css";
 
 export const LoginForm = ({ onSwitch }) => {
@@ -10,6 +10,7 @@ export const LoginForm = ({ onSwitch }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            // might move this API call to a separate auth service file later, but for now it's here
             const response = await fetch("http://localhost:8080/api/auth/login", {
                 method: "POST",
                 headers: {

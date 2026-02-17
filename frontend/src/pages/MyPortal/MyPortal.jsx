@@ -1,46 +1,43 @@
 import { useEffect, useState } from "react";
+import { fetchCurrentUser } from "../../utils/api";
 import { getUserFirstName } from "../../utils/auth";
 
 export const MyPortal = () => {
-    const [users, setUsers] = useState([]);
+    const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
     const firstName = getUserFirstName();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        //! production endpoint
-        // fetch("https://api.masterblasterhub.com/api/users") 
-        //! local testing
-        fetch("http://localhost:8080/api/users")
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error("Failed to fetch users");
-                }
-                return res.json();
-            })
-            .then((data) => {
-                setUsers(data);
-            })
-            .catch((err) => {
+        const loadUser = async () => {
+            try {
+                const data = await fetchCurrentUser();
+                setUser(data);
+            } catch (err) {
                 console.error(err);
-                setError("Error loading users");
-            });
+                setError("Failed to load user data.");
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadUser();
     }, []);
 
     return (
         <div>
             <h2>My Portal</h2>
             {firstName && <p>Welcome back, {firstName}.</p>}
+            {loading && <p>Loading your data...</p>}
             {error && <p>{error}</p>}
-
-            {users.length === 0 && !error && <p>Loading users...</p>}
-
-            {users.map((user) => (
-                <div key={user.id} style={{ marginBottom: "10px" }}>
-                    <strong>{user.firstName} {user.lastName}</strong>
-                    <div>Email: {user.email}</div>
-                    <div>Role: {user.role}</div>
+            {user && (
+                <div>
+                    <h3>Account Information</h3>
+                    <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
+                    <p><strong>Email:</strong> {user.email}</p>
+                    <p><strong>Status:</strong> {user.isActive ? "Active" : "Inactive"}</p>
+                    <p><strong>Role:</strong> {user.role}</p>
                 </div>
-            ))}
+            )}
         </div>
     );
 };
