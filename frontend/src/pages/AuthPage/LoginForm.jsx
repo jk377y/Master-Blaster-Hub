@@ -11,8 +11,8 @@ export const LoginForm = ({ onSwitch }) => {
         e.preventDefault();
         try {
             // might move this API call to a separate auth service file later, but for now it's here
-            // const response = await fetch("http://localhost:8080/api/auth/login", {
-            const response = await fetch("https://api.masterblasterhub.com/api/auth/login", {
+            const response = await fetch("http://localhost:8080/api/auth/login", {
+            // const response = await fetch("https://api.masterblasterhub.com/api/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
