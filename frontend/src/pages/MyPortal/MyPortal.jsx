@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { getUserFirstName } from "../../utils/auth";
 
 export const MyPortal = () => {
     const [users, setUsers] = useState([]);
     const [error, setError] = useState(null);
+    const firstName = getUserFirstName();
 
     useEffect(() => {
         //! production endpoint
@@ -27,7 +29,7 @@ export const MyPortal = () => {
     return (
         <div>
             <h2>My Portal</h2>
-
+            {firstName && <p>Welcome back, {firstName}.</p>}
             {error && <p>{error}</p>}
 
             {users.length === 0 && !error && <p>Loading users...</p>}

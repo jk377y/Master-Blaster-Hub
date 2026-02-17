@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getToken } from "../../utils/auth";
 
 export const Admin = () => {
     const [isResetting, setIsResetting] = useState(false);
@@ -14,11 +15,19 @@ export const Admin = () => {
             setResetMessage("");
             //! production endpoint
             // const response = await fetch("https://api.masterblasterhub.com/api/admin/reset", {
-            //     method: "POST"
+            //     method: "POST",
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //         "Authorization": `Bearer ${getToken()}`
+            //     }
             // });
             //! local testing
             const response = await fetch("http://localhost:8080/api/admin/reset", {
-                method: "POST"
+                method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getToken()}`
+            }
             });
 
             if (!response.ok) {

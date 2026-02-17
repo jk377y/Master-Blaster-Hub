@@ -6,6 +6,7 @@ export function saveAuth(token) {
 
 export function clearAuth() {
     localStorage.removeItem("token");
+    localStorage.removeItem("authUser");
 }
 
 export function getToken() {

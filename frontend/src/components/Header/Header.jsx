@@ -1,15 +1,21 @@
-import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import MoonIcon from "../../assets/icons/moon.png";
 import SunIcon from "../../assets/icons/sun.png";
+import { clearAuth, getUserRole, isAuthenticated } from "../../utils/auth";
 import styles from "./Header.module.css";
 
 export const Header = () => {
-
+    const navigate = useNavigate();
+    const authenticated = isAuthenticated();
+    const role = getUserRole();
+    const handleLogout = () => {
+        clearAuth();           // removes token
+        navigate("/login");    // send user to login
+    };
     const [theme, setTheme] = useState(() => {
         return localStorage.getItem("theme") || "dark";
     });
-
     const toggleTheme = () => {
         setTheme(prev => (prev === "dark" ? "light" : "dark"));
     };
@@ -30,16 +36,28 @@ export const Header = () => {
             <div className={styles.navigation}>
                 <nav className={styles.nav}>
                     <Link to="/" className={styles.link}>Homepage</Link>
-                    <span className={styles.span}>|</span>
 
-                    {/* temporary for testing */}
-                    <Link to="/login" className={styles.link}>Login</Link>
-                    <span className={styles.span}>|</span>
+                    {authenticated && role === "ADMIN" && (
+                        <>
+                            {/* <span className={styles.span}>|</span> */}
+                            <Link to="/admin" className={styles.link}>Admin</Link>
+                        </>
+                    )}
 
-                    <Link to="/admin" className={styles.link}>Admin</Link>
-                    <span className={styles.span}>|</span>
-
-                    <Link to="/myportal" className={styles.link}>MyPortal</Link>
+                    {authenticated && (
+                        <>
+                            {/* <span className={styles.span}>|</span> */}
+                            <Link to="/myportal" className={styles.link}>MyPortal</Link>
+                            {/* <span className={styles.span}>|</span> */}
+                            <span onClick={handleLogout} className={styles.link} style={{ cursor: "pointer" }}>Logout</span>
+                        </>
+                    )}
+                    {!authenticated && (
+                        <>
+                            {/* <span className={styles.span}>|</span> */}
+                            <Link to="/login" className={styles.link}>Login</Link>
+                        </>
+                    )}
                 </nav>
             </div>
 

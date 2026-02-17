@@ -8,16 +8,16 @@ import { Footer } from "./components/Footer/Footer";
 import { NotFound } from "./pages/NotFound/NotFound";
 import { NotAuthorized } from "./pages/NotAuthorized/NotAuthorized";
 import { ProtectedRoute } from "./components/routing/ProtectedRoute";
-
-const user = {
-    // for testing customer access
-    // role: "customer" 
-    
-    // for testing admin access
-    role: "admin" 
-};
+import { isAuthenticated, getUserRole } from "./utils/auth";
+import { useState, useEffect } from "react";
 
 export const App = () => {
+    const [role, setRole] = useState(null);
+    useEffect(() => {
+        if (isAuthenticated()) {
+            setRole(getUserRole());
+        }
+    }, []);
     return (
         <BrowserRouter>
             <Header />
@@ -29,7 +29,8 @@ export const App = () => {
                 <Route
                     path="/myportal"
                     element={
-                        <ProtectedRoute user={user} allowedRoles={["customer", "admin"]}>
+                        <ProtectedRoute 
+                            user={{ role }} allowedRoles={["CUSTOMER", "ADMIN"]}>
                             <MyPortal />
                         </ProtectedRoute>
                     }
@@ -38,7 +39,8 @@ export const App = () => {
                 <Route
                     path="/admin"
                     element={
-                        <ProtectedRoute user={user} allowedRoles={["admin"]}>
+                        <ProtectedRoute 
+                            user={{ role }} allowedRoles={["ADMIN"]}>
                             <Admin />
                         </ProtectedRoute>
                     }

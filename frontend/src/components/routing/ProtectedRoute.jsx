@@ -1,11 +1,12 @@
 import { Navigate } from "react-router-dom";
+import { isAuthenticated, getUserRole } from "../../utils/auth";
 
-export const ProtectedRoute = ({ children, user, allowedRoles }) => {
-    if (!user) {
-        return <Navigate to="/login" replace />;
+export const ProtectedRoute = ({ children, allowedRoles }) => {
+    if (!isAuthenticated()) {
+        return <Navigate to="/" replace />;
     }
 
-    if (!allowedRoles.includes(user.role)) {
+    if (allowedRoles && !allowedRoles.includes(getUserRole())) {
         return <Navigate to="/not-authorized" replace />;
     }
 

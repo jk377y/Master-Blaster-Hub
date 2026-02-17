@@ -1,14 +1,47 @@
 import { useState } from "react";
-import { saveAuth } from "../../utils/auth";
+import { useNavigate } from "react-router-dom";
+import { getUserFirstName, getUserRole, saveAuth } from "../../utils/auth";
 import styles from "./AuthPage.module.css";
 
 export const LoginForm = ({ onSwitch }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const handleSubmit = (e) => {
+    const navigate = useNavigate();
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Email:", email); // for testing purposes
-        console.log("Password:", password); // for testing purposes
+        try {
+            const response = await fetch("http://localhost:8080/api/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email,
+                    password
+                })
+            });
+            if (!response.ok) {
+                throw new Error("Login failed");
+            }
+            const data = await response.json();
+            console.log("Login response:", data);
+            saveAuth(data.token);
+            //! remove later, just for testing; using JWT decoding to get role and first name instead of storing separately in localStorage
+            localStorage.setItem("authUser", JSON.stringify({
+                email: data.email,
+                role: data.role,
+                userFirstName: data.userFirstName
+            }));
+            console.log("Decoded role:", getUserRole());
+            const role = getUserRole();
+            if (role === "ADMIN") {
+                navigate("/admin");
+            } else {
+                navigate("/myportal");
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+        }
     };
     return (
         <form onSubmit={handleSubmit}>
