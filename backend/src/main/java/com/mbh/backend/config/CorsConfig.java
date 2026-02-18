@@ -1,3 +1,6 @@
+
+//! THIS ENTIRE FILE WILL BE DELETED - CORS CONFIGURATION IS NOW HANDLED IN SecurityConfig.java
+
 // package com.mbh.backend.config;
 
 // import org.springframework.context.annotation.Bean;
