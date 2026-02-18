@@ -1,21 +1,46 @@
 import { getToken } from "./auth";
 
-// production API base URL (comment out for local development)
-// const BASE_URL = "https://api.masterblasterhub.com/api";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-// local development API base URL
-const BASE_URL = "http://localhost:8080/api";
-
-export async function fetchCurrentUser() {
-    const response = await fetch(`${BASE_URL}/users/me`, {
+async function apiFetch(path, options = {}) {
+    const response = await fetch(`${BASE_URL}${path}`, {
         headers: {
-            "Authorization": `Bearer ${getToken()}`
-        }
+            "Content-Type": "application/json",
+            ...(getToken() && { Authorization: `Bearer ${getToken()}` }),
+            ...options.headers
+        },
+        ...options
+    });
+    if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`);
+    }
+    return response;
+}
+
+/* ---------- AUTH ---------- */
+
+export async function login(email, password) {
+    const response = await apiFetch("/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password })
     });
 
-    if (!response.ok) {
-        throw new Error("Failed to fetch current user");
-    }
-
     return response.json();
+}
+
+/* ---------- USER ---------- */
+
+export async function fetchCurrentUser() {
+    const response = await apiFetch("/users/me");
+    return response.json();
+}
+
+/* ---------- ADMIN ---------- */
+
+export async function resetDatabase() {
+    const response = await apiFetch("/admin/reset", {
+        method: "POST"
+    });
+
+    return response.text();
 }

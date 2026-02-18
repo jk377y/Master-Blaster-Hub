@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { login } from "../../utils/api";
 import { getUserRole, saveAuth } from "../../utils/auth";
 import styles from "./AuthPage.module.css";
 
@@ -8,43 +9,20 @@ export const LoginForm = ({ onSwitch }) => {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            // might move this API call to a separate auth service file later, but for now it's here
-            const response = await fetch("http://localhost:8080/api/auth/login", {
-            // const response = await fetch("https://api.masterblasterhub.com/api/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    email,
-                    password
-                })
-            });
-            if (!response.ok) {
-                throw new Error("Login failed");
-            }
-            const data = await response.json();
-            console.log("Login response:", data);
-            saveAuth(data.token);
-            //! remove later, just for testing; using JWT decoding to get role and first name instead of storing separately in localStorage
-            localStorage.setItem("authUser", JSON.stringify({
-                email: data.email,
-                role: data.role,
-                userFirstName: data.userFirstName
-            }));
-            console.log("Decoded role:", getUserRole());
-            const role = getUserRole();
-            if (role === "ADMIN") {
-                navigate("/admin");
-            } else {
-                navigate("/myportal");
-            }
-        } catch (error) {
-            console.error("Login error:", error);
+    e.preventDefault();
+    try {
+        const data = await login(email, password);
+        saveAuth(data.token);
+        const role = getUserRole();
+        if (role === "ADMIN") {
+            navigate("/admin");
+        } else {
+            navigate("/myportal");
         }
-    };
+    } catch (error) {
+        console.error("Login error:", error);
+    }
+};
     return (
         <form onSubmit={handleSubmit}>
             <h2 className={styles.title}>Login</h2>

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin")
-@CrossOrigin // allows frontend to call it
 public class AdminController {
     private final DatabaseResetService databaseResetService;
     public AdminController(DatabaseResetService databaseResetService) {
