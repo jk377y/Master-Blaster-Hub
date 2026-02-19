@@ -1,4 +1,5 @@
 package com.mbh.backend.models;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,7 +18,7 @@ public class User extends BaseEntity {
     private Boolean isActive;
     private Boolean isSystemAccount; // true ONLY for masterAdmin; using this flag to prevent deletion of masterAdmin account
     private List<Address> addresses;
-
+    
     public String getEmail() {
         return email;
     }
@@ -72,5 +73,9 @@ public class User extends BaseEntity {
     }
     public void setAddresses(List<Address> addresses) {
         this.addresses = addresses;
+    }
+
+    public String getPermissions() {
+        return "BASIC_ACCESS";
     }
 }
