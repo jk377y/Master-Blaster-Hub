@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchCurrentUser } from "../../utils/api";
+import { fetchCurrentUser } from "../../api/userApi";
 import { getUserFirstName, getUserRole } from "../../utils/auth";
 
 export const MyPortal = () => {

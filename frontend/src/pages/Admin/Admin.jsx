@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { resetDatabase } from "../../utils/api";
+import { resetDatabase } from "../../api/adminApi";
 
 export const Admin = () => {
     const [isResetting, setIsResetting] = useState(false);

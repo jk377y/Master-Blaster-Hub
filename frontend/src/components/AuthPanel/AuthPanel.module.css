@@ -28,10 +28,9 @@
 	border: var(--border-inset);
 	font-size: 14px;
 	padding: 0.3rem;
+    margin-top: 0.5rem;
 	margin-bottom: 0.5rem;
 }
-
-
 
 .button {
 	width: 100%;
@@ -47,6 +46,12 @@
 .button:hover {
 	border: var(--border-inset);
     background-color: var(--background-color-window2);
+}
+
+.error {
+    color: #b00020;
+    font-size: 0.9rem;
+    text-align: center;
 }
 
 .switchText {

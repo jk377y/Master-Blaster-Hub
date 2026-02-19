@@ -10,12 +10,9 @@ export const AuthPanel = ({ onLogin }) => {
         <div className={styles.container}>
             <div className={styles.card}>
                 {isSignup ? (
-                    <SignupForm onSwitch={() => setIsSignup(false)} />
+                    <SignupForm onSwitch={() => setIsSignup(false)} onLogin={onLogin} />
                 ) : (
-                    <LoginForm 
-                        onLogin={onLogin}
-                        onSwitch={() => setIsSignup(true)} 
-                    />
+                    <LoginForm onLogin={onLogin} onSwitch={() => setIsSignup(true)} />
                 )}
             </div>
         </div>

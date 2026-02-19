@@ -1,13 +1,16 @@
 package com.mbh.backend.controllers;
 
+import org.springframework.dao.DuplicateKeyException;
 import com.mbh.backend.dto.LoginRequest;
+import com.mbh.backend.dto.SignupRequest;
 import com.mbh.backend.models.User;
 import com.mbh.backend.repositories.UserRepository;
 import com.mbh.backend.security.JwtUtil;
-
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -33,8 +36,6 @@ public class AuthController {
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
-
-        // generates JWT with email and role as claims
         String token = jwtUtil.generateToken(
             user.getEmail(),
             user.getRole().name(),
@@ -48,5 +49,30 @@ public class AuthController {
                         "userFirstName", user.getFirstName()
                 )
         );
+    }
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request) {
+        try {
+            User user = new User();
+            user.setEmail(request.getEmail().trim().toLowerCase());
+            user.setFirstName(request.getFirstName().trim());
+            user.setLastName(request.getLastName().trim());
+            user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+            user.setRole(com.mbh.backend.models.Role.CUSTOMER);
+            user.setIsActive(true);
+            user.setIsSystemAccount(false);
+            user.setCreatedAt(java.time.Instant.now());
+            userRepository.save(user);
+            String token = jwtUtil.generateToken(
+                user.getEmail(),
+                user.getRole().name(),
+                user.getFirstName()
+        );
+        return ResponseEntity.ok(Map.of("token", token));
+        }   catch (DuplicateKeyException ex) {
+            return ResponseEntity
+                    .status(409)
+                    .body("Email already in use");
+        }
     }
 }
