@@ -28,6 +28,8 @@ export async function login(email, password) {
     return response.json();
 }
 
+//todo: add signup function when implemented on backend
+
 /* ---------- USER ---------- */
 
 export async function fetchCurrentUser() {

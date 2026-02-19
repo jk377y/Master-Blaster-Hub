@@ -1,4 +1,4 @@
-import styles from "./AuthPage.module.css";
+import styles from "./AuthPanel.module.css";
 
 export const SignupForm = ({ onSwitch }) => {
     return (

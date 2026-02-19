@@ -3,9 +3,6 @@ package com.mbh.backend.controllers;
 import com.mbh.backend.models.Address;
 import com.mbh.backend.models.User;
 import com.mbh.backend.repositories.UserRepository;
-
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -38,11 +35,5 @@ public class UserController {
     }
     user.getAddresses().add(newAddress);
     return userRepository.save(user);
-}
-
-    // used early for testing, disabled since adding authentication logic
-    // @GetMapping("/users")
-    // public List<User> getAllUsers() {
-    //     return userRepository.findAll();
-    // }
+    }
 }

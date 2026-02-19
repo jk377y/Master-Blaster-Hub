@@ -1,32 +1,44 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../utils/api";
-import { getUserRole, saveAuth } from "../../utils/auth";
-import styles from "./AuthPage.module.css";
+import { getDecodedToken, saveAuth } from "../../utils/auth";
+import styles from "./AuthPanel.module.css";
 
-export const LoginForm = ({ onSwitch }) => {
+export const LoginForm = ({ onSwitch, onLogin }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+
     const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-        const data = await login(email, password);
-        saveAuth(data.token);
-        const role = getUserRole();
-        if (role === "ADMIN") {
-            navigate("/admin");
-        } else {
-            navigate("/myportal");
+        e.preventDefault();
+        try {
+            const data = await login(email, password);
+            saveAuth(data.token);
+            const decodedUser = getDecodedToken();
+            console.log(decodedUser);
+            if (!decodedUser) {
+                throw new Error("Token decoding failed");
+            }
+            const userData = {
+                firstName: decodedUser.firstName,
+                role: decodedUser.role,
+                email: decodedUser.sub // email is JWT subject claim
+            };
+            localStorage.setItem("authUser", JSON.stringify(userData));
+            onLogin(userData);
+            if (userData.role === "ADMIN") {
+                navigate("/admin");
+            } else {
+                navigate("/myportal");
+            }
+        } catch (error) {
+            console.error("Login error:", error);
         }
-    } catch (error) {
-        console.error("Login error:", error);
-    }
-};
+    };
+
     return (
         <form onSubmit={handleSubmit}>
             <h2 className={styles.title}>Login</h2>
-
             <div className={styles.field}>
                 <input
                     type="email"
@@ -60,4 +72,4 @@ export const LoginForm = ({ onSwitch }) => {
             </p>
         </form>
     );
-}
+};
