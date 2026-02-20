@@ -5,8 +5,6 @@
 	height: 100px;
 	background-color: var(--background-color-window);
 	box-shadow: var(--box-shadow-small);
-	padding: 0px 10px;
-	margin-bottom: 40px;
 }
 
 .brandContainer {
@@ -17,6 +15,8 @@
 
 .brand {
 	font-weight: bold;
+    text-shadow: 2px 2px 2px black;
+    padding-left: 10px;
 }
 
 .navigation {
@@ -24,18 +24,19 @@
 	display: flex;
 	align-items: flex-end;
 	justify-content: space-between;
-	padding-bottom: 5px;
+	padding: 0px 5px 0px 0px;
 }
 
 .nav {
 	color: var(--text-color-primary);
+    text-shadow: 1px 1px 2px black;
 }
 
 .span {
 	color: var(--text-color-primary);
 }
 
-.link {
+/* .link {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -45,21 +46,83 @@
 	height: 36px;
 	border-radius: 5px;
 	font-size: 20px;
+} */
+
+/* .link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  padding: 0 12px;
+  height: 36px;
+  text-decoration: none;
+  color: var(--text-color-primary);
+  font-size: 20px;
+} */
+
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  height: 36px;
+  text-decoration: none;
+  color: var(--text-color-primary);
+  font-size: 20px;
 }
 
-.link:visited {
-	color: var(--text-color-primary);
+.linkText {
+  position: relative;
+}
+
+/* .link::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background-color: var(--text-color-secondary);
+  transition: width 0.25s ease;
+} */
+
+.linkText::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height:2px;
+  background-color: var(--text-color-secondary);
+  transition: width 0.25s ease;
+}
+
+.active .linkText::after {
+  width: 100%;
 }
 
 .link:hover {
 	color: var(--text-color-secondary);
 }
 
+.active {
+  color: var(--text-color-secondary);
+  /* font-weight: 600; */
+}
+
+.active::after {
+  width: 100%;
+}
+
 /* ThemeToggle Styling */
 .toggle {
 	cursor: pointer;
 	position: absolute;
-	bottom: -35px;
+	top: 5px;
 	right: 5px;
 	border: 3px solid var(--background-color-icon);
 	border-radius: 50%;

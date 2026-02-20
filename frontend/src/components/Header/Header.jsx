@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import MoonIcon from "../../assets/icons/moon.png";
 import SunIcon from "../../assets/icons/sun.png";
 import styles from "./Header.module.css";
@@ -31,13 +31,22 @@ export const Header = ({ user, onLogout }) => {
             </div>
             <div className={styles.navigation}>
                 <nav className={styles.nav}>
-                    <Link to="/" className={styles.link}>Homepage</Link>
+                    <NavLink to="/" className={({ isActive }) => isActive 
+                        ? `${styles.link} ${styles.active}` : styles.link}>
+                        <span className={styles.linkText}>Homepage</span>
+                    </NavLink>
                     {authenticated && role === "ADMIN" && (
-                        <Link to="/admin" className={styles.link}>Admin</Link>
+                        <NavLink to="/admin" className={({ isActive }) => isActive
+                            ? `${styles.link} ${styles.active}` : styles.link}>
+                            <span className={styles.linkText}>Admin</span>
+                        </NavLink>
                     )}
                     {authenticated && (
                         <>
-                            <Link to="/myportal" className={styles.link}>MyPortal</Link>
+                            <NavLink to="/myportal" className={({ isActive }) => isActive
+                                ? `${styles.link} ${styles.active}` : styles.link}>
+                                <span className={styles.linkText}>MyPortal</span>
+                            </NavLink>
                             <span
                                 onClick={handleLogout}
                                 className={styles.link}

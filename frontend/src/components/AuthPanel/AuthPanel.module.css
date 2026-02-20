@@ -1,57 +1,59 @@
-.container {
-	min-height: calc(100vh - 135px);
+.authPanelContainer {
+    width: 100%;
+    /* min-width: 250px; */
+    max-width: 350px;
 	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: var(--background-color);
-
+	justify-content: flex-end;
+	align-items: flex-start;
+	/* padding: 10px 10px 0px 0px; */
+	/* margin-bottom: 20px; */
 }
 
 .card {
-    width: 90%;
-    max-width: 400px;
-    padding: 2rem;
-    background: var(--background-color-window);
-    border: var(--border-outset);
-    border-radius: 8px;
-    box-shadow: var(--box-shadow-large);
+	/* width: 100%; */
+	max-width: 350px;
+	padding: 1rem;
+	background: var(--background-color-window);
+	/* border: var(--border-outset); */
+	border-radius: 8px;
+	box-shadow: var(--box-shadow-large);
 }
 
 .title {
 	margin-bottom: 1rem;
 	text-align: center;
+	text-shadow: 1px 1px 2px black;
 }
 
 .field :nth-child(1) {
 	display: flex;
 	width: 100%;
 	border: var(--border-inset);
-	font-size: 14px;
-	padding: 0.3rem;
-    margin-top: 0.5rem;
+	font-size: 12px;
+	padding: 0.2rem;
+	margin-top: 0.35rem;
 	margin-bottom: 0.5rem;
 }
 
 .button {
 	width: 100%;
-	padding: 0.6rem;
+	padding: 0.4rem;
 	margin-top: 0.5rem;
 	border: var(--border-solid);
-	box-shadow: var(--box-shadow-small);
-	font-size: 16px;
+	font-size: 12px;
 	background-color: var(--background-color);
-	color: var(--text-color-secondary);
+	color: var(--text-color-primary);
 }
 
 .button:hover {
-	border: var(--border-inset);
-    background-color: var(--background-color-window2);
+	color: var(--text-color-secondary);
+	cursor: pointer;
 }
 
 .error {
-    color: #b00020;
-    font-size: 0.9rem;
-    text-align: center;
+	color: var(--error-color);
+	font-size: 0.8rem;
+	text-align: center;
 }
 
 .switchText {
@@ -65,5 +67,19 @@
 }
 
 .link:hover {
-    text-decoration: underline;
+	text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+	.authPanelContainer {
+		justify-content: center;
+        width: 100%;
+        min-width: 100%;
+		/* padding: 10px; */
+	}
+
+    .card {
+        width: 100%;
+        max-width: 350px;
+    }
 }

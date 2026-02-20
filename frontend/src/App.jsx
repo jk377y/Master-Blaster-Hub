@@ -9,6 +9,7 @@ import { MyPortal } from "./pages/MyPortal/MyPortal";
 import { NotAuthorized } from "./pages/NotAuthorized/NotAuthorized";
 import { NotFound } from "./pages/NotFound/NotFound";
 import { clearAuth } from "./utils/auth";
+import "./styles/global.css";
 
 export const App = () => {
     const [user, setUser] = useState(null);
@@ -24,24 +25,26 @@ export const App = () => {
         setUser(null);
     };
     return (
-        <BrowserRouter>
-            <Header user={user} onLogout={handleLogout} />
-            <Routes>
-                <Route path="/" element={<Homepage user={user} setUser={setUser} />}/>
-                <Route path="/myportal" element={
-                        <ProtectedRoute user={user} allowedRoles={["CUSTOMER", "ADMIN"]}>
-                            <MyPortal />
-                        </ProtectedRoute>
-                    }/>
-                <Route path="/admin" element={
-                        <ProtectedRoute user={user} allowedRoles={["ADMIN"]}>
-                            <Admin />
-                        </ProtectedRoute>
-                    }/>
-                <Route path="/not-authorized" element={<NotAuthorized />} />
-                <Route path="*" element={<NotFound />} />
-            </Routes>
-            <Footer />
-        </BrowserRouter>
+        <div className="appContainer">
+            <BrowserRouter>
+                <Header user={user} onLogout={handleLogout} />
+                <Routes>
+                    <Route path="/" element={<Homepage user={user} setUser={setUser} />}/>
+                    <Route path="/myportal" element={
+                            <ProtectedRoute user={user} allowedRoles={["CUSTOMER", "ADMIN"]}>
+                                <MyPortal user={user}/>
+                            </ProtectedRoute>
+                        }/>
+                    <Route path="/admin" element={
+                            <ProtectedRoute user={user} allowedRoles={["ADMIN"]}>
+                                <Admin user={user}/>
+                            </ProtectedRoute>
+                        }/>
+                    <Route path="/not-authorized" element={<NotAuthorized />} />
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+                <Footer />
+            </BrowserRouter>
+        </div>
     );
 };

@@ -7,7 +7,7 @@ export const AuthPanel = ({ onLogin }) => {
     const [isSignup, setIsSignup] = useState(false);
 
     return (
-        <div className={styles.container}>
+        <div className={styles.authPanelContainer}>
             <div className={styles.card}>
                 {isSignup ? (
                     <SignupForm onSwitch={() => setIsSignup(false)} onLogin={onLogin} />
