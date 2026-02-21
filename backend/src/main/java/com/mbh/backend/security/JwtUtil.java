@@ -14,6 +14,7 @@ import java.util.Date;
 public class JwtUtil {
     private final Key key;
     private final long EXPIRATION_MS = 1000 * 60 * 60; // 1 hour
+    //! private final long EXPIRATION_MS = 1000 * 15 * 1; //! 15 seconds  ---  FOR TESTING PURPOSES ONLY, CHANGE BACK TO 1 HOUR BEFORE DEPLOYMENT ---
     public JwtUtil(@Value("${JWT_SECRET}") String secret) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }

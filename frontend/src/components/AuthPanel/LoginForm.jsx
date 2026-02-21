@@ -48,7 +48,7 @@ export const LoginForm = ({ onSwitch, onLogin }) => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    />
+                />
             </div>
             <div className={styles.field}>
                 <input
@@ -60,7 +60,7 @@ export const LoginForm = ({ onSwitch, onLogin }) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    />
+                />
             </div>
             {error && <div className={styles.error}>{error}</div>}
             <button type="submit" className={styles.button} disabled={loading} >
