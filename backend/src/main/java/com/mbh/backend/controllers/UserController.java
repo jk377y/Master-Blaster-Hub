@@ -36,4 +36,20 @@ public class UserController {
     user.getAddresses().add(newAddress);
     return userRepository.save(user);
     }
+
+    @PatchMapping("/address/{addressId}/deactivate")
+    public User deactivateAddress(@PathVariable String addressId,
+                        Authentication authentication) {
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        if (user.getAddresses() != null) {
+            user.getAddresses().forEach(addr -> {
+                if (addr.getId().equals(addressId)) {
+                    addr.setIsActive(false);
+                }
+            });
+        }
+        return userRepository.save(user);
+    }
 }

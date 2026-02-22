@@ -9,6 +9,7 @@ public class Address {
     private String state;
     private String zip;
     private Boolean isBillingSameAsService;
+    private Boolean isActive = true;
     private List<JobHistory> jobHistory;
 
     public String getId() {
@@ -58,5 +59,12 @@ public class Address {
     }
     public void setJobHistory(List<JobHistory> jobHistory) {
         this.jobHistory = jobHistory;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+    public void setIsActive(Boolean active) {
+        isActive = active;
     }
 }

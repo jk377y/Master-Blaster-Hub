@@ -16,8 +16,11 @@ export const Homepage = ({ user, setUser, sessionExpired, clearSessionExpired })
                 <img className={styles.homepageImage} src={homepageImage} alt="man using surface cleaning equipment" />
                 {!user ? (<AuthPanel onLogin={setUser} />) : (<LoggedInAs user={user} />)}
             </div>
+            {/* <hr/> */}
             <div className={styles.heroSection}>
+                <h2>Welcome To The</h2>
                 <h2>Master Blaster Hub</h2>
+                <br />
                 <p>
                     A streamlined portal for managing marine operations,
                     service records, and customer accounts.

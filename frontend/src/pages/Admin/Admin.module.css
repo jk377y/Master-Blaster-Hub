@@ -1,6 +1,7 @@
 .adminContainer {
     position: relative;
-    min-height: calc(100vh - 135px);
+    min-height: calc(100vh - 190px);
+    margin-top: 1rem;
     padding: 20px;
 }
 

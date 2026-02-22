@@ -4,7 +4,8 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    height: calc(100vh - 140px);
+    min-height: calc(100vh - 190px);
+    margin-top: 1rem;
     background-color: var(--background-color);
 }
 .errorHeading {
