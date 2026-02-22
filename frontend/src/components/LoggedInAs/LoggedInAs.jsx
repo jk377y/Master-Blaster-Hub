@@ -5,7 +5,7 @@ export const LoggedInAs = ({ user }) => {
         <div className={styles.loggedInAsContainer}>
             <div>
                 <span>Logged in as: </span>
-                <span className={styles.userName}>{user.firstName}</span>
+                <span className={styles.userName}>{user.firstName} ({user.role})</span>
             </div>
             {/* <div>
                 <span>Role: </span>

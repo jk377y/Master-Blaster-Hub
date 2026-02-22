@@ -2,11 +2,70 @@
     position: relative;
     min-height: calc(100vh - 190px);
     margin-top: 1rem;
-    padding: 20px;
+    padding: 1rem;
 }
 
-button {
-    color: white;
+.dynamicContentPanel {
+    margin-top: 1rem;
+    display: flex;
+    max-width: 800px;
+    flex-direction: column;
+    gap: 1rem;
+    border: 4px inset var(--background-color-window2);
+    padding: 0.25rem;
+}
+
+.toast {
+    position: fixed;
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+    background-color: var(--background-color-icon);
+    color: var(--text-color-secondary);
+    padding: 0.75rem 1.25rem;
+    border-radius: 6px;
+    box-shadow: var(--box-shadow-large);
+    border: 2px solid var(--text-color-secondary);
+    z-index: 999;
+    opacity: 1;
+    font-size: 1.5rem;
+}
+
+
+.actionButtonsContainer {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.largeButton {
+    min-width: 75px;
+    max-width: 200px;
+    padding: 0.35rem 0.75rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    background-color: var(--background-color-window);
+    color: var(--text-color-primary);
+    border: 2px outset var(--background-color-window);
+}
+
+
+.largeButton.active {
+    border: 2px solid var(--text-color-secondary);
+}
+
+.largeButton:hover, .largeButton:hover h4 {
+    color: var(--text-color-secondary);
+    cursor: pointer;
+}
+
+.largeButtonDbReset {
+    /* font-size: 0.75rem; */
+}
+
+.largeButtonDbReset:hover {
     background-color: red;
-    padding: 0.5rem 1rem;
+    color: white;
+    border: 2px dotted black;
+    cursor: pointer;
 }

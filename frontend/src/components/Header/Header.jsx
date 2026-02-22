@@ -35,6 +35,12 @@ export const Header = ({ user, onLogout }) => {
                         ? `${styles.link} ${styles.active}` : styles.link}>
                         <span className={styles.linkText}>Homepage</span>
                     </NavLink>
+                    {authenticated && (
+                        <NavLink to="/myportal" className={({ isActive }) => isActive
+                            ? `${styles.link} ${styles.active}` : styles.link}>
+                            <span className={styles.linkText}>MyPortal</span>
+                        </NavLink>
+                    )}
                     {authenticated && role === "ADMIN" && (
                         <NavLink to="/admin" className={({ isActive }) => isActive
                             ? `${styles.link} ${styles.active}` : styles.link}>
@@ -42,19 +48,13 @@ export const Header = ({ user, onLogout }) => {
                         </NavLink>
                     )}
                     {authenticated && (
-                        <>
-                            <NavLink to="/myportal" className={({ isActive }) => isActive
-                                ? `${styles.link} ${styles.active}` : styles.link}>
-                                <span className={styles.linkText}>MyPortal</span>
-                            </NavLink>
-                            <span
-                                onClick={handleLogout}
-                                className={styles.link}
-                                style={{ cursor: "pointer" }}
-                            >
-                                Logout
-                            </span>
-                        </>
+                        <span
+                            onClick={handleLogout}
+                            className={styles.link}
+                            style={{ cursor: "pointer" }}
+                        >
+                            Logout
+                        </span>
                     )}
                 </nav>
             </div>

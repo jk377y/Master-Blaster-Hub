@@ -39,8 +39,11 @@
     margin-top: 1rem;
     display: flex;
     max-width: 800px;
+    /* height: 100px; */
     flex-direction: column;
     gap: 1rem;
+    border: 4px inset var(--background-color-window2);
+    padding: 0.25rem;
 }
 .addAddressContainer {
     background-color: var(--background-color-window);
@@ -163,7 +166,7 @@
     border: 2px solid var(--text-color-secondary);
 }
 
-.largeButton:hover {
+.largeButton:hover, .largeButton:hover h4 {
     color: var(--text-color-secondary);
     cursor: pointer;
 }
