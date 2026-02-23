@@ -1,9 +1,12 @@
 package com.mbh.backend.models;
 
-import java.time.LocalDate;
+import java.time.Instant;
+// import java.time.LocalDate;
+import java.util.UUID;
 
 public class JobHistory {
 
+    private String id = UUID.randomUUID().toString();
     private String serviceId; //! references Service collection
     private String serviceNameSnapshot;
     private Double squareFootage;
@@ -12,8 +15,15 @@ public class JobHistory {
     private Double minimumCharge;
     private Double calculatedQuote;
     private JobStatus status;
-    private LocalDate requestedDate;
-    private LocalDate completedDate;
+    private Instant requestedDate;
+    private Instant completedDate;
+
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getServiceId() {
         return serviceId;
@@ -71,17 +81,17 @@ public class JobHistory {
         this.status = status;
     }
 
-    public LocalDate getRequestedDate() {
+    public Instant getRequestedDate() {
         return requestedDate;
     }
-    public void setRequestedDate(LocalDate requestedDate) {
+    public void setRequestedDate(Instant requestedDate) {
         this.requestedDate = requestedDate;
     }
 
-    public LocalDate getCompletedDate() {
+    public Instant getCompletedDate() {
         return completedDate;
     }
-    public void setCompletedDate(LocalDate completedDate) {
+    public void setCompletedDate(Instant completedDate) {
         this.completedDate = completedDate;
     }
 }

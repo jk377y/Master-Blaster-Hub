@@ -1,7 +1,7 @@
 package com.mbh.backend.dto;
 
 import com.mbh.backend.models.JobStatus;
-import java.time.LocalDate;
+import java.time.Instant;
 
 public class JobSearchResult {
     private String userEmail;
@@ -10,7 +10,7 @@ public class JobSearchResult {
     private Double squareFootage;
     private Double calculatedQuote;
     private JobStatus status;
-    private LocalDate requestedDate;
+    private Instant requestedDate;
     public JobSearchResult() {}
     public JobSearchResult(String userEmail,
                            String city,
@@ -18,7 +18,7 @@ public class JobSearchResult {
                            Double squareFootage,
                            Double calculatedQuote,
                            JobStatus status,
-                           LocalDate requestedDate) {
+                           Instant requestedDate) {
         this.userEmail = userEmail;
         this.city = city;
         this.serviceName = serviceName;
@@ -33,5 +33,5 @@ public class JobSearchResult {
     public Double getSquareFootage() { return squareFootage; }
     public Double getCalculatedQuote() { return calculatedQuote; }
     public JobStatus getStatus() { return status; }
-    public LocalDate getRequestedDate() { return requestedDate; }
+    public Instant getRequestedDate() { return requestedDate; }
 }

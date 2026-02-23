@@ -100,6 +100,7 @@ public class SeedDataFactory {
                 for (int j = 0; j < jobCount; j++) {
                     Service randomService = services.get(random.nextInt(services.size()));
                     JobHistory job = new JobHistory();
+                    job.setId(java.util.UUID.randomUUID().toString());
                     job.setServiceId(randomService.getId());
                     job.setServiceNameSnapshot(randomService.getName());
                     job.setPricingType(randomService.getPricingType());
@@ -121,7 +122,7 @@ public class SeedDataFactory {
                     job.setCalculatedQuote(calculated);
                     JobStatus[] statuses = JobStatus.values();
                     job.setStatus(statuses[random.nextInt(statuses.length)]);
-                    job.setRequestedDate(LocalDate.now().minusDays(random.nextInt(30)));
+                    job.setRequestedDate(Instant.now().minusSeconds(random.nextInt(30 * 24 * 60 * 60)));
                     job.setCompletedDate(null);
                     jobs.add(job);
                 }
