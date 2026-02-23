@@ -1,5 +1,6 @@
 package com.mbh.backend.controllers;
 
+import com.mbh.backend.dto.CustomerSearchResult;
 import com.mbh.backend.dto.JobSearchResult;
 import com.mbh.backend.models.Address;
 import com.mbh.backend.models.JobHistory;
@@ -66,6 +67,96 @@ public class AdminController {
         }
         userRepository.delete(targetUser);
         return ResponseEntity.ok("User deleted successfully.");
+    }
+    @GetMapping("/customers/search")
+    public ResponseEntity<List<CustomerSearchResult>> searchCustomers(
+            @RequestParam(required = false) String field,
+            @RequestParam(required = false) String value,
+            Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String currentUserEmail = authentication.getName();
+        User currentUser = userRepository.findByEmail(currentUserEmail).orElse(null);
+        if (currentUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        PermissionService permissionService =
+                permissionServiceFactory.getPermissionService(currentUser);
+        if (!permissionService.canViewReports(currentUser)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        List<CustomerSearchResult> results = new ArrayList<>();
+        List<User> users = userRepository.findAll();
+        for (User user : users) {
+            CustomerSearchResult row = new CustomerSearchResult(
+                    user.getId(),
+                    user.getEmail(),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getRole(),
+                    user.getIsActive(),
+                    user.getCreatedAt()
+            );
+            boolean matches = true;
+            if (field != null && value != null && !field.equalsIgnoreCase("all")) {
+                String lowerValue = value.toLowerCase();
+                switch (field.toLowerCase()) {
+                    case "email":
+                        matches = user.getEmail() != null &&
+                                user.getEmail().toLowerCase().contains(lowerValue);
+                        break;
+                    case "lastname":
+                        matches = user.getLastName() != null &&
+                                user.getLastName().toLowerCase().contains(lowerValue);
+                        break;
+                    case "role":
+                        matches = user.getRole() != null &&
+                                user.getRole().name().toLowerCase().contains(lowerValue);
+                        break;
+                    default:
+                        matches = true;
+                }
+            }
+            if (matches) {
+                results.add(row);
+            }
+        }
+        return ResponseEntity.ok(results);
+    }
+    @PatchMapping("/customers/{id}")
+    public ResponseEntity<?> updateCustomer(
+            @PathVariable String id,
+            @RequestBody User updatedUser,
+            Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String currentUserEmail = authentication.getName();
+        User currentUser = userRepository.findByEmail(currentUserEmail).orElse(null);
+        if (currentUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        PermissionService permissionService =
+                permissionServiceFactory.getPermissionService(currentUser);
+        if (!permissionService.canViewReports(currentUser)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        User existing = userRepository.findById(id).orElse(null);
+        if (existing == null) {
+            return ResponseEntity.notFound().build();
+        }
+        if (updatedUser.getFirstName() != null) {
+            existing.setFirstName(updatedUser.getFirstName());
+        }
+        if (updatedUser.getLastName() != null) {
+            existing.setLastName(updatedUser.getLastName());
+        }
+        if (updatedUser.getIsActive() != null) {
+            existing.setIsActive(updatedUser.getIsActive());
+        }
+        userRepository.save(existing);
+        return ResponseEntity.ok("Customer updated successfully.");
     }
     @GetMapping("/jobs/search")
     public ResponseEntity<List<JobSearchResult>> searchJobs(
