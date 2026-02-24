@@ -39,12 +39,51 @@
 	margin-top: 1rem;
 	display: flex;
 	max-width: 800px;
-	/* height: 100px; */
+    max-height: 600px;
 	flex-direction: column;
-	gap: 1rem;
+	/* align-items: center; */
+	/* gap: 1rem; */
 	border: 4px inset var(--background-color-window2);
-	padding: 0.25rem;
+    overflow-y: auto;
+    overflow-x: auto;
+    /* padding: 0.75rem; */
+    position: relative;
 }
+
+.dynamicContentPanel > div {
+    /* margin-top: 3.5rem; */
+    padding: 0.5rem;
+    /* max-height: 600px; */
+    /* display: flex; */
+}
+
+.dynamicContentPanel > div > h3 {
+    margin-bottom: 0.5rem;
+}
+
+.refreshButtonContainer {
+    display: flex;
+    flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-bottom: 1rem;
+}
+
+.refreshButton {
+	padding: 0.35rem 0.75rem;
+	font-size: 0.75rem;
+	border-radius: 6px;
+	background-color: var(--background-color-window);
+	color: var(--text-color-primary);
+	border: 2px outset var(--background-color-window);
+}
+
+.refreshButton:hover {
+	color: var(--text-color-secondary);
+	cursor: pointer;
+}
+
+
+
 .addAddressContainer {
 	background-color: var(--background-color-window);
 	padding: 1rem;
@@ -118,6 +157,22 @@
 	font-size: 1em;
 	border-radius: 6px;
 	border: 2px solid var(--background-color);
+}
+
+.sqftInputContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.sqftInputContainer label {
+    font-size: 1rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.527);
+}
+
+.sqftInputContainer input[type='number'] {
+    width: 100px;
 }
 
 .toast {
@@ -198,6 +253,30 @@
 	z-index: 2;
 	box-shadow: 0 2px 0 var(--text-color-primary);
 	/* border-bottom: 1px solid var(--text-color-primary); */
+}
+
+.smallButtonContainer {
+    display: flex;
+    /* flex-direction: row; */
+    /* width: fit-content; */
+    /* align-items: center; */
+    /* justify-content: center; */
+    gap: 0.5rem;
+}
+
+.smallButton {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    background-color: var(--background-color-window);
+    color: var(--text-color-primary);
+    border: 2px outset var(--background-color-window);
+    /* margin-right: 0.5rem; */
+}
+
+.smallButton:hover {
+    color: var(--text-color-secondary);
+    cursor: pointer;
 }
 
 .statusDanger,

@@ -94,6 +94,10 @@ public class AdminController {
                     user.getEmail(),
                     user.getFirstName(),
                     user.getLastName(),
+                    user.getAddresses() != null && !user.getAddresses().isEmpty()
+                            ? user.getAddresses().get(0).getStreet() : "",
+                    user.getAddresses() != null && !user.getAddresses().isEmpty()
+                            ? user.getAddresses().get(0).getCity() : "",
                     user.getRole(),
                     user.getIsActive(),
                     user.getCreatedAt()
@@ -185,7 +189,10 @@ public class AdminController {
                 for (JobHistory job : address.getJobHistory()) {
                     JobSearchResult row = new JobSearchResult(
                             job.getId(),
+                            user.getFirstName(),
+                            user.getLastName(),
                             user.getEmail(),
+                            address.getStreet(),
                             address.getCity(),
                             job.getServiceNameSnapshot(),
                             job.getSquareFootage(),

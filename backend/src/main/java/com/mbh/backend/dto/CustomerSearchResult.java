@@ -9,6 +9,8 @@ public class CustomerSearchResult {
     private String email;
     private String firstName;
     private String lastName;
+    private String street; //! Added street field
+    private String city;   //! Added city field
     private Role role;
     private Boolean isActive;
     private Instant createdAt;
@@ -17,6 +19,8 @@ public class CustomerSearchResult {
                                 String email,
                                 String firstName,
                                 String lastName,
+                                String street,
+                                String city,
                                 Role role,
                                 Boolean isActive,
                                 Instant createdAt) {
@@ -24,6 +28,8 @@ public class CustomerSearchResult {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.street = street;
+        this.city = city;
         this.role = role;
         this.isActive = isActive;
         this.createdAt = createdAt;
@@ -33,6 +39,8 @@ public class CustomerSearchResult {
     public String getEmail() { return email; }
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
+    public String getStreet() { return street; }
+    public String getCity() { return city; }
     public Role getRole() { return role; }
     public Boolean getIsActive() { return isActive; }
     public Instant getCreatedAt() { return createdAt; }

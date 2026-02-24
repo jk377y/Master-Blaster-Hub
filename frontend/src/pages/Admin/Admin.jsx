@@ -21,6 +21,7 @@ export const Admin = ({ user }) => {
         lastName: "",
         isActive: true
     });
+    const [reportData, setReportData] = useState(null);
     const handleDatabaseReset = async () => {
         const confirmReset = window.confirm(
             "This will completely wipe and rebuild the database.\n\nAre you sure?"
@@ -131,6 +132,99 @@ export const Admin = ({ user }) => {
                 return "";
         }
     };
+    // const handleGenerateReport = () => {
+    //     const timestamp = new Date().toLocaleString();
+    //     if (activeView === "customers" && customerResults.length > 0) {
+    //         setReportData({
+    //             title: "Customer Search Report",
+    //             timestamp,
+    //             columns: ["Email", "First Name", "Last Name", "Role", "Active", "Created"],
+    //             rows: customerResults.map(c => [
+    //                 c.email,
+    //                 c.firstName,
+    //                 c.lastName,
+    //                 c.role,
+    //                 c.isActive ? "Yes" : "No",
+    //                 new Date(c.createdAt).toLocaleString()
+    //             ])
+    //         });
+    //     }
+    //     if (activeView === "search" && jobResults.length > 0) {
+    //         setReportData({
+    //             title: "Service Job Report",
+    //             timestamp,
+    //             columns: ["Email", "City", "Service", "Quote", "Status"],
+    //             rows: jobResults.map(j => [
+    //                 j.userEmail,
+    //                 j.city,
+    //                 j.serviceName,
+    //                 j.calculatedQuote != null
+    //                     ? `$${Number(j.calculatedQuote).toFixed(2)}`
+    //                     : "-",
+    //                 j.status
+    //             ])
+    //         });
+    //     }
+    // };
+    const handleExportCSV = () => {
+        const timestamp = new Date().toLocaleString();
+        let title = "";
+        let columns = [];
+        let rows = [];
+
+        if (activeView === "customers" && customerResults.length > 0) {
+            title = "Customer_Search_Report";
+            columns = ["First Name", "Last Name", "Email", "Street", "City","Role", "Active", "Created"];  //! Updated columns to include Street and City
+            rows = customerResults.map(c => [
+                c.firstName,
+                c.lastName,
+                c.email,
+                c.street,//!  added this line to include street in the report
+                c.city, //!  added this line to include city in the report
+                c.role,
+                c.isActive ? "Yes" : "No",
+                new Date(c.createdAt).toLocaleString()
+            ]);
+        }
+
+        if (activeView === "search" && jobResults.length > 0) {
+            title = "Service_Job_Report";
+            columns = ["First Name", "Last Name", "Email", "Street", "City", "Service", "Quote", "Status"];
+            rows = jobResults.map(j => [
+                j.firstName,
+                j.lastName,
+                j.userEmail,
+                j.street,//added this line to include address in the report
+                j.city,
+                j.serviceName,
+                j.calculatedQuote != null
+                    ? `$${Number(j.calculatedQuote).toFixed(2)}`
+                    : "",
+                j.status
+            ]);
+        }
+
+        if (rows.length === 0) return;
+
+        const csvContent = [
+            "Master Blaster Hub",
+            title.replace(/_/g, " "),
+            `Generated: ${timestamp}`,
+            "",
+            columns.join(","),
+            ...rows.map(row => row.join(","))
+        ].join("\n");
+
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${title}_${Date.now()}.csv`;
+        link.click();
+
+        URL.revokeObjectURL(url);
+    };
     useEffect(() => {
         if (!toastMessage) return;
 
@@ -183,9 +277,10 @@ export const Admin = ({ user }) => {
                 {activeView === "customers" && (
                     <div>
                         <button
-                            // onClick={generate report for current customer display}
-                            className={styles.reportLargeButton}>
-                            <h5>Generate Report From This Data</h5>
+                            onClick={handleExportCSV}
+                            className={styles.reportLargeButton}
+                        >
+                            <h5>Export Report (CSV)</h5>
                         </button>
                         <h3>Search Customers</h3>
                         <div className={styles.customerSearchControls}>
@@ -219,9 +314,11 @@ export const Admin = ({ user }) => {
                                 <table className={styles.resultsTable}>
                                     <thead>
                                         <tr>
-                                            <th>Email</th>
                                             <th>First Name</th>
                                             <th>Last Name</th>
+                                            <th>Email</th>
+                                            <th>Street</th>
+                                            <th>City</th>
                                             <th>Role</th>
                                             <th>Active</th>
                                             <th>Created</th>
@@ -231,7 +328,6 @@ export const Admin = ({ user }) => {
                                     <tbody>
                                         {customerResults.map(customer => (
                                             <tr key={customer.id}>
-                                                <td>{customer.email}</td>
                                                 <td>
                                                     {editingCustomerId === customer.id ? (
                                                         <input
@@ -262,6 +358,9 @@ export const Admin = ({ user }) => {
                                                         customer.lastName
                                                     )}
                                                 </td>
+                                                <td>{customer.email}</td>
+                                                <td>{customer.street}</td>
+                                                <td>{customer.city}</td>
                                                 <td>{customer.role}</td>
                                                 <td>
                                                     {editingCustomerId === customer.id ? (
@@ -316,19 +415,22 @@ export const Admin = ({ user }) => {
                     <div>
 
                         <button
-                            // onClick={generate report for current service jobs display}
-                            className={styles.reportLargeButton}>
-                            <h5>Generate Report From This Data</h5>
+                            onClick={handleExportCSV}
+                            className={styles.reportLargeButton}
+                        >
+                            <h5>Export Report (CSV)</h5>
                         </button>
                         <h3>Search Jobs</h3>
                         <div className={styles.customerSearchControls}>
                             <input
+                                className={styles.customerSearchBar}
                                 type="search"
                                 placeholder="Search value..."
                                 value={jobValue}
                                 onChange={(e) => setJobValue(e.target.value)}
                             />
                             <select
+                                className={styles.customerSearchSelect}
                                 value={jobField}
                                 onChange={(e) => setJobField(e.target.value)}
                             >
@@ -338,12 +440,14 @@ export const Admin = ({ user }) => {
                                 <option value="servicename">Service</option>
                                 <option value="status">Status</option>
                             </select>
-                            <button onClick={handleJobSearch} disabled={isSearchingJobs}>
+                            <button 
+                                className={styles.customerSearchButton}
+                                onClick={handleJobSearch} disabled={isSearchingJobs}>
                                 {isSearchingJobs ? "Searching..." : "Search"}
                             </button>
                             <div className={styles.refreshButtonContainer}>
                                 <button
-                                    className={styles.largeButton}
+                                    className={styles.refreshButton}
                                     onClick={handleRefreshJobs}
                                 >
                                     Refresh
@@ -354,7 +458,10 @@ export const Admin = ({ user }) => {
                             <table className={styles.resultsTable}>
                                 <thead>
                                     <tr>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
                                         <th>Email</th>
+                                        <th>Street</th>
                                         <th>City</th>
                                         <th>Service</th>
                                         <th>Quote</th>
@@ -365,7 +472,10 @@ export const Admin = ({ user }) => {
                                 <tbody>
                                     {jobResults.map((job, index) => (
                                         <tr key={index}>
+                                            <td>{job.firstName}</td>
+                                            <td>{job.lastName}</td>
                                             <td>{job.userEmail}</td>
+                                            <td>{job.street}</td>  {/* I WANT TO INCLUDE THE STREET VALUE HERE FOR THE JOB */}
                                             <td>{job.city}</td>
                                             <td>{job.serviceName}</td>
                                             <td>
@@ -377,27 +487,35 @@ export const Admin = ({ user }) => {
                                                 {job.status}
                                             </td>
                                             <td>
-                                                {job.status === "REQUESTED" && (
-                                                    <button onClick={() =>
-                                                        handleJobStatusUpdate(job.id, "QUOTED")
-                                                    }>
-                                                        Quote
-                                                    </button>
-                                                )}
-                                                {job.status === "APPROVED" && (
-                                                    <button onClick={() =>
-                                                        handleJobStatusUpdate(job.id, "COMPLETED")
-                                                    }>
-                                                        Complete
-                                                    </button>
-                                                )}
-                                                {job.status === "DECLINED" && (
-                                                    <button onClick={() =>
-                                                        handleJobStatusUpdate(job.id, "CANCELLED")
-                                                    }>
-                                                        Cancel
-                                                    </button>
-                                                )}
+                                                <div className={styles.smallButtonContainer}>
+                                                    {job.status === "REQUESTED" && (
+                                                        <button
+                                                            className={styles.smallButton}
+                                                            onClick={() =>
+                                                            handleJobStatusUpdate(job.id, "QUOTED")
+                                                        }>
+                                                            Quote
+                                                        </button>
+                                                    )}
+                                                    {job.status === "APPROVED" && (
+                                                        <button
+                                                            className={styles.smallButton}
+                                                            onClick={() =>
+                                                            handleJobStatusUpdate(job.id, "COMPLETED")
+                                                        }>
+                                                            Complete
+                                                        </button>
+                                                    )}
+                                                    {job.status === "DECLINED" && (
+                                                        <button
+                                                            className={styles.smallButton}
+                                                            onClick={() =>
+                                                            handleJobStatusUpdate(job.id, "CANCELLED")
+                                                        }>
+                                                            Cancel
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
@@ -411,13 +529,39 @@ export const Admin = ({ user }) => {
                         <button
                             onClick={handleDatabaseReset}
                             disabled={isResetting}
-                            className={`${styles.largeButton} ${styles.largeButtonDbReset}`}
+                            className={styles.largeButtonDbReset}
                         >
                             {isResetting ? "Resetting..." : "CONFIRM RESET"}
                         </button>
                     </div>
                 )}
             </div>
+            {/* {reportData && (
+                <div className={styles.reportContainer}>
+                    <h2>Master Blaster Hub</h2>
+                    <h3>{reportData.title}</h3>
+                    <p>Generated: {reportData.timestamp}</p>
+
+                    <table className={styles.resultsTable}>
+                        <thead>
+                            <tr>
+                                {reportData.columns.map((col, idx) => (
+                                    <th key={idx}>{col}</th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {reportData.rows.map((row, rowIdx) => (
+                                <tr key={rowIdx}>
+                                    {row.map((cell, cellIdx) => (
+                                        <td key={cellIdx}>{cell}</td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )} */}
         </div>
     );
 };

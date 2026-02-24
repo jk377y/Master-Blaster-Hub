@@ -382,8 +382,8 @@ export const MyPortal = ({ user }) => {
                         {selectedService && (
                             <div style={{ marginTop: "15px" }}>
                                 {selectedService.pricingType === "PER_SQFT" && (
-                                    <div>
-                                        <label>Square Footage</label>
+                                    <div className={styles.sqftInputContainer}>
+                                        <label>Square Footage:</label>
                                         <input
                                             type="number"
                                             value={squareFootage}
@@ -428,9 +428,9 @@ export const MyPortal = ({ user }) => {
                     <div>
                         <h3>My Service Requests</h3>
                         <div className={styles.refreshButtonContainer}>
-                            <div style={{ marginBottom: "10px" }}>
+                            <div>
                                 <button
-                                    className={styles.largeButton}
+                                    className={styles.refreshButton}
                                     onClick={handleRefreshJobs}
                                 >
                                     Refresh
@@ -463,8 +463,9 @@ export const MyPortal = ({ user }) => {
                                             </td>
                                             <td>
                                                 {job.status === "QUOTED" && (
-                                                    <>
+                                                    <div className={styles.smallButtonContainer}>
                                                         <button
+                                                            className={styles.smallButton}
                                                             onClick={() =>
                                                                 handleJobStatusUpdate(job.id, "APPROVED")
                                                             }
@@ -472,13 +473,14 @@ export const MyPortal = ({ user }) => {
                                                             Approve
                                                         </button>
                                                         <button
+                                                            className={styles.smallButton}
                                                             onClick={() =>
                                                                 handleJobStatusUpdate(job.id, "DECLINED")
                                                             }
                                                         >
                                                             Decline
                                                         </button>
-                                                    </>
+                                                    </div>
                                                 )}
                                             </td>
                                         </tr>
