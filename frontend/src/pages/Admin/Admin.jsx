@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { resetDatabase, searchCustomers, updateCustomer } from "../../api/adminApi";
+import { resetDatabase, searchCustomers, searchJobs, updateCustomer, updateJobStatus } from "../../api/adminApi";
 import { LoggedInAs } from "../../components/LoggedInAs/LoggedInAs";
 import styles from "./Admin.module.css";
 
@@ -12,6 +12,10 @@ export const Admin = ({ user }) => {
     const [customerResults, setCustomerResults] = useState([]);
     const [isSearchingCustomers, setIsSearchingCustomers] = useState(false);
     const [editingCustomerId, setEditingCustomerId] = useState(null);
+    const [jobResults, setJobResults] = useState([]);
+    const [jobField, setJobField] = useState("all");
+    const [jobValue, setJobValue] = useState("");
+    const [isSearchingJobs, setIsSearchingJobs] = useState(false);
     const [editForm, setEditForm] = useState({
         firstName: "",
         lastName: "",
@@ -75,6 +79,58 @@ export const Admin = ({ user }) => {
             isActive: customer.isActive
         });
     };
+    const handleJobSearch = async () => {
+        try {
+            setIsSearchingJobs(true);
+            const results = await searchJobs(
+                jobField === "all" ? null : jobField,
+                jobValue
+            );
+            setJobResults(results);
+        } catch {
+            setToastMessage("Job search failed.");
+        } finally {
+            setIsSearchingJobs(false);
+        }
+    };
+    const handleJobStatusUpdate = async (jobId, newStatus) => {
+        try {
+            const message = await updateJobStatus(jobId, newStatus);
+            setToastMessage(message);
+            await handleJobSearch();
+        } catch {
+            setToastMessage("Status update failed.");
+        }
+    };
+    // const handleRefreshJobs = async () => {
+    //     await handleJobSearch();
+    // };
+    const handleRefreshJobs = async () => {
+        try {
+            await handleJobSearch();
+            setToastMessage("Status refreshed.");
+        } catch {
+            setToastMessage("Refresh failed.");
+        }
+    };
+    const getStatusClass = (status) => {
+        switch (status) {
+            case "REQUESTED":
+            case "QUOTED":
+                return styles.statusPending;
+
+            case "APPROVED":
+            case "COMPLETED":
+                return styles.statusSuccess;
+
+            case "DECLINED":
+            case "CANCELLED":
+                return styles.statusDanger;
+
+            default:
+                return "";
+        }
+    };
     useEffect(() => {
         if (!toastMessage) return;
 
@@ -126,7 +182,9 @@ export const Admin = ({ user }) => {
                 )}
                 {activeView === "customers" && (
                     <div>
-                        <button className={styles.reportLargeButton}>
+                        <button
+                            // onClick={generate report for current customer display}
+                            className={styles.reportLargeButton}>
                             <h5>Generate Report From This Data</h5>
                         </button>
                         <h3>Search Customers</h3>
@@ -229,7 +287,7 @@ export const Admin = ({ user }) => {
                                                 <td>
                                                     {editingCustomerId === customer.id ? (
                                                         <>
-                                                            <button 
+                                                            <button
                                                                 className={styles.customerEditSaveButton}
                                                                 onClick={() => handleSaveCustomer(customer.id)}>
                                                                 Save
@@ -256,12 +314,96 @@ export const Admin = ({ user }) => {
                 )}
                 {activeView === "search" && (
                     <div>
+
                         <button
-                            className={styles.largeButton}
-                        // onClick={generateCustomerReport}
-                        ><h4>Generate Jobs Report</h4></button>
-                        <h3>Search Jobs (UI Placeholder)</h3>
-                        <input type="search" placeholder="Search jobs..." />
+                            // onClick={generate report for current service jobs display}
+                            className={styles.reportLargeButton}>
+                            <h5>Generate Report From This Data</h5>
+                        </button>
+                        <h3>Search Jobs</h3>
+                        <div className={styles.customerSearchControls}>
+                            <input
+                                type="search"
+                                placeholder="Search value..."
+                                value={jobValue}
+                                onChange={(e) => setJobValue(e.target.value)}
+                            />
+                            <select
+                                value={jobField}
+                                onChange={(e) => setJobField(e.target.value)}
+                            >
+                                <option value="all">All</option>
+                                <option value="email">Email</option>
+                                <option value="city">City</option>
+                                <option value="servicename">Service</option>
+                                <option value="status">Status</option>
+                            </select>
+                            <button onClick={handleJobSearch} disabled={isSearchingJobs}>
+                                {isSearchingJobs ? "Searching..." : "Search"}
+                            </button>
+                            <div className={styles.refreshButtonContainer}>
+                                <button
+                                    className={styles.largeButton}
+                                    onClick={handleRefreshJobs}
+                                >
+                                    Refresh
+                                </button>
+                            </div>
+                        </div>
+                        {jobResults.length > 0 && (
+                            <table className={styles.resultsTable}>
+                                <thead>
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>City</th>
+                                        <th>Service</th>
+                                        <th>Quote</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {jobResults.map((job, index) => (
+                                        <tr key={index}>
+                                            <td>{job.userEmail}</td>
+                                            <td>{job.city}</td>
+                                            <td>{job.serviceName}</td>
+                                            <td>
+                                                {job.calculatedQuote != null
+                                                    ? `$${Number(job.calculatedQuote).toFixed(2)}`
+                                                    : "-"}
+                                            </td>
+                                            <td className={getStatusClass(job.status)}>
+                                                {job.status}
+                                            </td>
+                                            <td>
+                                                {job.status === "REQUESTED" && (
+                                                    <button onClick={() =>
+                                                        handleJobStatusUpdate(job.id, "QUOTED")
+                                                    }>
+                                                        Quote
+                                                    </button>
+                                                )}
+                                                {job.status === "APPROVED" && (
+                                                    <button onClick={() =>
+                                                        handleJobStatusUpdate(job.id, "COMPLETED")
+                                                    }>
+                                                        Complete
+                                                    </button>
+                                                )}
+                                                {job.status === "DECLINED" && (
+                                                    <button onClick={() =>
+                                                        handleJobStatusUpdate(job.id, "CANCELLED")
+                                                    }>
+                                                        Cancel
+                                                    </button>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        )}
                     </div>
                 )}
                 {activeView === "reset" && (

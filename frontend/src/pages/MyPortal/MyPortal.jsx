@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { addAddress, deactivateAddress, fetchCurrentUser } from "../../api/userApi";
+import { addAddress, deactivateAddress, fetchCurrentUser, fetchServices, requestJob, updateJobStatus } from "../../api/userApi";
 import { LoggedInAs } from "../../components/LoggedInAs/LoggedInAs";
 import styles from "./MyPortal.module.css";
 
@@ -24,8 +24,56 @@ export const MyPortal = ({ user }) => {
         zip: "",
         isBillingSameAsService: false
     });
+    const allJobs = activeAddresses.flatMap(addr =>
+        (addr.jobHistory || []).map(job => ({
+            ...job,
+            addressLabel: `${addr.street}, ${addr.city}`
+        }))
+    );
+    const [services, setServices] = useState([]);
+    const [selectedServiceId, setSelectedServiceId] = useState("");
+    const [squareFootage, setSquareFootage] = useState("");
     const [toastMessage, setToastMessage] = useState(null);
+    const selectedService = services.find(
+        s => s.id === selectedServiceId
+    );
+    const handleJobStatusUpdate = async (jobId, newStatus) => {
+        try {
+            const message = await updateJobStatus(jobId, newStatus);
+            setToastMessage(message);
+            const refreshed = await fetchCurrentUser();
+            setDbUser(refreshed);
+        } catch {
+            setToastMessage("Status update failed.");
+        }
+    };
+    const handleRefreshJobs = async () => {
+        try {
+            const refreshed = await fetchCurrentUser();
+            setDbUser(refreshed);
+            setToastMessage("Status refreshed.");
+        } catch {
+            setToastMessage("Refresh failed.");
+        }
+    };
+    const getStatusClass = (status) => {
+        switch (status) {
+            case "REQUESTED":
+            case "QUOTED":
+                return styles.statusPending;
 
+            case "APPROVED":
+            case "COMPLETED":
+                return styles.statusSuccess;
+
+            case "DECLINED":
+            case "CANCELLED":
+                return styles.statusDanger;
+
+            default:
+                return "";
+        }
+    };
     useEffect(() => {
         if (!user) return;
 
@@ -51,6 +99,20 @@ export const MyPortal = ({ user }) => {
         }, 2000);
         return () => clearTimeout(timer);
     }, [toastMessage]);
+    useEffect(() => {
+        if (activeView !== "requestService") return;
+
+        async function loadServices() {
+            try {
+                const data = await fetchServices();
+                setServices(data);
+            } catch {
+                setToastMessage("Failed to load services.");
+            }
+        }
+
+        loadServices();
+    }, [activeView]);
     if (loadingUser) {
         return (
             <div className={styles.myPortalContainer}>
@@ -300,12 +362,130 @@ export const MyPortal = ({ user }) => {
                                 </>
                             )}
                         </select>
+                        {selectedAddressId && (
+                            <>
+                                <h4>Select Service</h4>
+
+                                <select
+                                    value={selectedServiceId}
+                                    onChange={(e) => setSelectedServiceId(e.target.value)}
+                                >
+                                    <option value="">-- Select Service --</option>
+                                    {services.map(service => (
+                                        <option key={service.id} value={service.id}>
+                                            {service.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </>
+                        )}
+                        {selectedService && (
+                            <div style={{ marginTop: "15px" }}>
+                                {selectedService.pricingType === "PER_SQFT" && (
+                                    <div>
+                                        <label>Square Footage</label>
+                                        <input
+                                            type="number"
+                                            value={squareFootage}
+                                            onChange={(e) => setSquareFootage(e.target.value)}
+                                        />
+                                    </div>
+                                )}
+
+                                <button
+                                    className={styles.largeButton}
+                                    disabled={
+                                        !selectedServiceId ||
+                                        (selectedService.pricingType === "PER_SQFT" && !squareFootage)
+                                    }
+                                    onClick={async () => {
+                                        try {
+                                            await requestJob(
+                                                selectedAddressId,
+                                                selectedServiceId,
+                                                squareFootage || null
+                                            );
+
+                                            const refreshed = await fetchCurrentUser();
+                                            setDbUser(refreshed);
+
+                                            setSelectedServiceId("");
+                                            setSquareFootage("");
+                                            setToastMessage("Service request submitted.");
+                                        } catch {
+                                            setToastMessage("Failed to submit request.");
+                                        }
+                                    }}
+                                >
+                                    Submit Request
+                                </button>
+                            </div>
+                        )}
                     </div>
                 )}
 
                 {activeView === "status" && (
                     <div>
-                        <h3>Request Status (UI Placeholder)</h3>
+                        <h3>My Service Requests</h3>
+                        <div className={styles.refreshButtonContainer}>
+                            <div style={{ marginBottom: "10px" }}>
+                                <button
+                                    className={styles.largeButton}
+                                    onClick={handleRefreshJobs}
+                                >
+                                    Refresh
+                                </button>
+                            </div>
+                        </div>
+                        {allJobs.length === 0 ? (
+                            <p>No service requests found.</p>
+                        ) : (
+                            <table className={styles.resultsTable}>
+                                <thead>
+                                    <tr>
+                                        <th>Address</th>
+                                        <th>Service</th>
+                                        <th>Quote</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {allJobs.map(job => (
+                                        <tr key={job.id}>
+                                            <td>{job.addressLabel}</td>
+                                            <td>{job.serviceNameSnapshot}</td>
+                                            <td>
+                                                ${Number(job.calculatedQuote).toFixed(2)}
+                                            </td>
+                                            <td className={getStatusClass(job.status)}>
+                                                {job.status}
+                                            </td>
+                                            <td>
+                                                {job.status === "QUOTED" && (
+                                                    <>
+                                                        <button
+                                                            onClick={() =>
+                                                                handleJobStatusUpdate(job.id, "APPROVED")
+                                                            }
+                                                        >
+                                                            Approve
+                                                        </button>
+                                                        <button
+                                                            onClick={() =>
+                                                                handleJobStatusUpdate(job.id, "DECLINED")
+                                                            }
+                                                        >
+                                                            Decline
+                                                        </button>
+                                                    </>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        )}
                     </div>
                 )}
             </div>

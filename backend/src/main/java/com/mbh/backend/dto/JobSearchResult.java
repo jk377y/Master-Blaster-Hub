@@ -4,6 +4,7 @@ import com.mbh.backend.models.JobStatus;
 import java.time.Instant;
 
 public class JobSearchResult {
+    private String id;
     private String userEmail;
     private String city;
     private String serviceName;
@@ -12,13 +13,15 @@ public class JobSearchResult {
     private JobStatus status;
     private Instant requestedDate;
     public JobSearchResult() {}
-    public JobSearchResult(String userEmail,
+    public JobSearchResult(String id,
+                           String userEmail,
                            String city,
                            String serviceName,
                            Double squareFootage,
                            Double calculatedQuote,
                            JobStatus status,
                            Instant requestedDate) {
+        this.id = id;
         this.userEmail = userEmail;
         this.city = city;
         this.serviceName = serviceName;
@@ -27,6 +30,7 @@ public class JobSearchResult {
         this.status = status;
         this.requestedDate = requestedDate;
     }
+    public String getId() { return id; }
     public String getUserEmail() { return userEmail; }
     public String getCity() { return city; }
     public String getServiceName() { return serviceName; }

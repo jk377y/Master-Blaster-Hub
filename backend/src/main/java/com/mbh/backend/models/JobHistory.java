@@ -1,7 +1,7 @@
 package com.mbh.backend.models;
 
 import java.time.Instant;
-// import java.time.LocalDate;
+// import java.time.LocalDate;  // switching to Instant for better timezone handling
 import java.util.UUID;
 
 public class JobHistory {

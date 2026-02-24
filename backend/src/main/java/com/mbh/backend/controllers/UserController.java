@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -76,25 +77,75 @@ public class UserController {
     // =======================
     // CREATE JOB (Customer → REQUESTED)
     // =======================
-    @PostMapping("/address/{addressId}/jobs")
-    public ResponseEntity<?> createJob(@PathVariable String addressId,
-                                       @RequestBody JobRequest request,
-                                       Authentication authentication) {
+    // @PostMapping("/address/{addressId}/jobs")
+    // public ResponseEntity<?> createJob(@PathVariable String addressId,
+    //                                    @RequestBody JobRequest request,
+    //                                    Authentication authentication) {
+    //     String email = authentication.getName();
+    //     User user = userRepository.findByEmail(email)
+    //             .orElseThrow(() -> new RuntimeException("User not found"));
+    //     if (user.getAddresses() == null) {
+    //         return ResponseEntity.badRequest().body("No addresses found.");
+    //     }
+    //     Address address = user.getAddresses().stream()
+    //             .filter(a -> a.getId().equals(addressId))
+    //             .findFirst()
+    //             .orElse(null);
+    //     if (address == null) {
+    //         return ResponseEntity.badRequest().body("Address not found.");
+    //     }
+    //     Service service = serviceRepository.findById(request.getServiceId())
+    //             .orElseThrow(() -> new RuntimeException("Service not found"));
+    //     JobHistory job = new JobHistory();
+    //     job.setServiceId(service.getId());
+    //     job.setServiceNameSnapshot(service.getName());
+    //     job.setPricingType(service.getPricingType());
+    //     job.setPriceUsed(service.getBasePrice());
+    //     job.setMinimumCharge(service.getMinimumCharge());
+    //     job.setSquareFootage(request.getSquareFootage());
+    //     double calculatedQuote;
+    //     if (service.getPricingType() == PricingType.FLAT) {
+    //         calculatedQuote = Math.max(
+    //                 service.getBasePrice(),
+    //                 service.getMinimumCharge()
+    //         );
+    //     } else {
+    //         double sqft = request.getSquareFootage() != null
+    //                 ? request.getSquareFootage()
+    //                 : 0;
+    //         calculatedQuote = Math.max(
+    //                 sqft * service.getBasePrice(),
+    //                 service.getMinimumCharge()
+    //         );
+    //     }
+    //     job.setCalculatedQuote(calculatedQuote);
+    //     job.setStatus(JobStatus.REQUESTED);
+    //     job.setRequestedDate(Instant.now());
+    //     if (address.getJobHistory() == null) {
+    //         address.setJobHistory(new ArrayList<>());
+    //     }
+    //     address.getJobHistory().add(job);
+    //     userRepository.save(user);
+    //     return ResponseEntity.ok("Job request submitted successfully.");
+    // }
+    @PostMapping("/{addressId}/jobs")
+    public ResponseEntity<?> createJob(
+            @PathVariable String addressId,
+            @RequestBody JobRequest request,
+            Authentication authentication) {
+
         String email = authentication.getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        if (user.getAddresses() == null) {
-            return ResponseEntity.badRequest().body("No addresses found.");
-        }
+
         Address address = user.getAddresses().stream()
-                .filter(a -> a.getId().equals(addressId))
+                .filter(addr -> addr.getId().equals(addressId))
                 .findFirst()
-                .orElse(null);
-        if (address == null) {
-            return ResponseEntity.badRequest().body("Address not found.");
-        }
+                .orElseThrow(() -> new RuntimeException("Address not found"));
+
         Service service = serviceRepository.findById(request.getServiceId())
                 .orElseThrow(() -> new RuntimeException("Service not found"));
+
         JobHistory job = new JobHistory();
         job.setServiceId(service.getId());
         job.setServiceNameSnapshot(service.getName());
@@ -102,29 +153,27 @@ public class UserController {
         job.setPriceUsed(service.getBasePrice());
         job.setMinimumCharge(service.getMinimumCharge());
         job.setSquareFootage(request.getSquareFootage());
-        double calculatedQuote;
-        if (service.getPricingType() == PricingType.FLAT) {
-            calculatedQuote = Math.max(
-                    service.getBasePrice(),
-                    service.getMinimumCharge()
-            );
-        } else {
-            double sqft = request.getSquareFootage() != null
-                    ? request.getSquareFootage()
-                    : 0;
-            calculatedQuote = Math.max(
-                    sqft * service.getBasePrice(),
-                    service.getMinimumCharge()
-            );
-        }
-        job.setCalculatedQuote(calculatedQuote);
         job.setStatus(JobStatus.REQUESTED);
         job.setRequestedDate(Instant.now());
+
         if (address.getJobHistory() == null) {
             address.setJobHistory(new ArrayList<>());
         }
+
         address.getJobHistory().add(job);
         userRepository.save(user);
-        return ResponseEntity.ok("Job request submitted successfully.");
+
+        return ResponseEntity.ok("Service request submitted.");
+    }
+
+    // =======================
+    // GET ACTIVE SERVICES
+    // =======================
+    @GetMapping("/services")
+    public List<Service> getActiveServices() {
+        return serviceRepository.findAll()
+                .stream()
+                .filter(service -> Boolean.TRUE.equals(service.getIsActive()))
+                .toList();
     }
 }

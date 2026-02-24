@@ -184,6 +184,7 @@ public class AdminController {
                 if (address.getJobHistory() == null) continue;
                 for (JobHistory job : address.getJobHistory()) {
                     JobSearchResult row = new JobSearchResult(
+                            job.getId(),
                             user.getEmail(),
                             address.getCity(),
                             job.getServiceNameSnapshot(),

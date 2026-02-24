@@ -21,3 +21,29 @@ export async function addAddress(address) {
     });
     return response.json();
 }
+
+export const updateJobStatus = async (jobId, newStatus) => {
+    const response = await apiFetch(`/jobs/${jobId}/status?newStatus=${newStatus}`,{ 
+        method: "PATCH" }
+    );
+    return response.text();
+};
+
+export const fetchServices = async () => {
+    const response = await apiFetch("/users/services");
+    return response.json();
+};
+
+export const requestJob = async (addressId, serviceId, squareFootage) => {
+    const response = await apiFetch(
+        `/users/${addressId}/jobs`,
+        {
+            method: "POST",
+            body: JSON.stringify({
+                serviceId,
+                squareFootage
+            })
+        }
+    );
+    return response.text();
+};

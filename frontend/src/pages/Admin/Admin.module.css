@@ -230,3 +230,26 @@
     box-shadow: 0 2px 0 var(--text-color-primary);
     /* border-bottom: 1px solid var(--text-color-primary); */
 }
+
+
+.statusDanger,
+.statusPending,
+.statusSuccess {
+    background-color: rgb(20, 20, 20) !important;
+	font-weight: 600;
+	font-size: 0.8rem;
+	letter-spacing: 1px;
+	text-align: center !important;
+}
+
+.statusPending {
+    color: #ffee00 !important;
+}
+
+.statusSuccess {
+    color: #00ff22 !important;
+}
+
+.statusDanger {
+    color: #ff0000 !important;
+}
