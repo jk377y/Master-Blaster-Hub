@@ -7,6 +7,7 @@ import { ProtectedRoute } from "./components/routing/ProtectedRoute";
 import { Admin } from "./pages/Admin/Admin";
 import { Homepage } from "./pages/Homepage/Homepage";
 import { MyPortal } from "./pages/MyPortal/MyPortal";
+import { TechStack } from "./pages/TechStack/TechStack";
 import { NotAuthorized } from "./pages/NotAuthorized/NotAuthorized";
 import { NotFound } from "./pages/NotFound/NotFound";
 import "./styles/global.css";
@@ -101,6 +102,7 @@ export const App = () => {
                         <Admin user={user} />
                     </ProtectedRoute>
                 } />
+                <Route path="/tech-stack" element={<TechStack />} />
                 <Route path="/not-authorized" element={<NotAuthorized />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>

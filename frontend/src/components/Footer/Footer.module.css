@@ -35,3 +35,15 @@
     /* margin-bottom: 10px; */
     /* padding-bottom: 20px; */
 }
+
+.footerLink {
+    color: var(--text-color-secondary);
+    text-decoration: none;
+
+}
+.footerLink:hover {
+    text-decoration: underline;
+}
+.footerLink:visited {
+    color: var(--text-color-secondary);
+}
