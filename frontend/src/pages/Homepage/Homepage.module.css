@@ -1,67 +1,62 @@
+/* ============================= */
+/* PAGE LAYOUT                   */
+/* ============================= */
+
 .homepageContainer {
-	position: relative;
-	min-height: calc(100vh - 190px);
-	display: flex;
-	flex-direction: column;
-	margin-top: 1rem;
-	gap: 20px;
+    position: relative;
+    min-height: calc(100vh - 190px);
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    gap: 20px;
 }
 
 .topSection {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	margin: 0rem 0.5rem 0 5%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 0.5rem 0 5%;
 }
 
 .homepageImage {
-	max-width: 350px;
-	height: auto;
-	box-shadow: var(--box-shadow-large);
-    /* padding-top: 1.5rem; */
+    max-width: 350px;
+    height: auto;
+    box-shadow: var(--box-shadow-large);
 }
+
+
+/* ============================= */
+/* HERO / MARKETING SECTION      */
+/* ============================= */
 
 .heroSection {
-	width: 100%;
-	/* display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center; */
+    width: 100%;
     text-align: center;
-	/* text-shadow: 1px 1px 2px var(--text-color-primary); */
-    /* padding-left: 30px; */
 }
 
-/* .heroSection h2 {
-    font-weight: bolder;
-} */
 
-.introText {
-	margin-top: 1rem;
-	font-size: 1.3rem;
-	line-height: 1.5;
-}
+/* ============================= */
+/* SESSION EXPIRED BANNER        */
+/* ============================= */
 
 .sessionBanner {
-  position: fixed;
-  top: 150px;
-  right: 50%;
-  transform: translateX(50%);
-  background: rgba(83, 83, 83, 0.308);
-  color: var(--text-color-primary);
-  text-shadow: 1px 1px 2px black;
-  padding: 12px 18px;
-  /* border-left: 4px solid rgba(0, 0, 0, 0.4); */
-  border-radius: 6px;
-  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.75);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  z-index: 1000;
+    position: fixed;
+    top: 150px;
+    right: 50%;
+    transform: translateX(50%);
+    background: rgba(83, 83, 83, 0.308);
+    color: var(--text-color-primary);
+    text-shadow: 1px 1px 2px black;
+    padding: 12px 18px;
+    border-radius: 6px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
 }
 
 .closeButton {
-    background: none;
     border: none;
     border-radius: 5px;
     background-color: red;
@@ -73,52 +68,31 @@
     font-weight: bolder;
 }
 
+
+/* ============================= */
+/* RESPONSIVE ADJUSTMENTS        */
+/* ============================= */
+
 @media (max-width: 768px) {
-	.homepageContainer {
-		min-height: 100%;
-		align-items: center;
-	}
+    .homepageContainer {
+        min-height: 100%;
+        align-items: center;
+    }
 
-	.topSection {
-		align-items: center;
-		/* justify-content: center; */
-		flex-direction: column-reverse;
-		flex-basis: -1;
-		gap: 20px;
-		padding: 0;
-        margin: 0rem;
-	}
-	.homepageImage {
-		width: 100%;
-		max-width: 350px;
-	}
-
-	.heroSection {
-		/* display: flex; */
-		/* flex-direction: column; */
-		/* justify-content: center; */
-		/* width: 100%; */
-		max-width: 350px;
-		/* align-items: center; */
-		/* padding: 3rem; */
-		/* text-align: center; */
-		/* text-shadow: 1px 1px 2px black; */
-	}
-}
-
-/* @media (max-width: 768px) {
     .topSection {
-		padding: 20px;
-	}
+        flex-direction: column-reverse;
+        align-items: center;
+        gap: 20px;
+        padding: 0;
+        margin: 0;
+    }
 
     .homepageImage {
-        max-width: 100%;
+        width: 100%;
+        max-width: 350px;
     }
-	
-    .heroSection {
-		align-items: center;
-		padding: 1rem;
-		text-align: center;
-	}
 
-} */
+    .heroSection {
+        max-width: 350px;
+    }
+}

@@ -1,72 +1,87 @@
-.container {
-	/* padding: 2rem; */
-	display: flex;
-    flex-direction: column;
-    /* margin: 0 auto; */
-    justify-content: center;
-	position: relative;
-	min-height: calc(100vh - 175px);
-	/* margin-top: 1rem; */
-	padding: 1rem 1rem 0 1rem;
+/* ============================= */
+/* PAGE CONTAINER                */
+/* ============================= */
 
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    min-height: calc(100vh - 175px);
+    padding: 1rem 1rem 0 1rem;
 }
 
 .container h2,
-.container h3 {
-	color: var(--text-color-secondary);
-	text-align: center;
+.container h3,
+.cardTitle {
+    color: var(--text-color-secondary);
+    text-align: center;
+}
+
+
+/* ============================= */
+/* DESCRIPTION TEXT              */
+/* ============================= */
+
+.description {
+    margin: 1rem auto;
+    max-width: 800px;
+    text-align: center;
+}
+
+
+/* ============================= */
+/* CARD GROUP LAYOUT             */
+/* ============================= */
+
+.cardGroup {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+
+/* ============================= */
+/* STACK CARDS                   */
+/* ============================= */
+
+.card {
+    background-color: var(--background-color-window);
+    padding: 2rem;
+    border-radius: 12px;
+    min-width: 300px;
+    width: 340px;
+    max-width: 90%;
+    height: 350px;
+    max-height: 350px;
 }
 
 .cardTitle {
-	color: var(--text-color-secondary);
-	margin: 1rem 0;
-}
-
-.description {
-	margin: 1rem auto;
-	max-width: 800px;
-	text-align: center;
-}
-
-.cardGroup {
-	display: flex;
-	/* align-items: center; */
-	justify-content: center;
-	flex-wrap: wrap;
-	gap: 2rem;
-	/* margin-bottom: 2rem; */
-}
-
-.card {
-	/* flex: 1; */
-	background-color: var(--background-color-window);
-	padding: 2rem;
-	border-radius: 12px;
-	min-width: 300px;
-	width: 340px;
-	max-width: 90%;
-	height: 350px;
-	max-height: 350px;
+    margin: 1rem 0;
 }
 
 .card ul {
-	list-style:circle;
-	padding-left: 1rem;
-	font-size: 1rem;
-	/* gap: 1rem; */
+    list-style: circle;
+    padding-left: 1rem;
+    font-size: 1rem;
 }
 
 .card li {
-	margin-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .card li::marker {
     color: var(--text-color-secondary);
 }
 
-/* Responsive stack */
+
+/* ============================= */
+/* RESPONSIVE ADJUSTMENTS        */
+/* ============================= */
+
 @media (max-width: 768px) {
-	.card li {
-		font-size: 0.9rem;
-	}
+    .card li {
+        font-size: 0.9rem;
+    }
 }

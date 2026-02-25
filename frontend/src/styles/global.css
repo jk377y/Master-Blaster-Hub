@@ -1,151 +1,142 @@
+/* ============================= */
+/* CSS RESET                     */
+/* ============================= */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+
+/* ============================= */
+/* THEME VARIABLES               */
+/* ============================= */
+
 :root {
-	--primary-color: #3498db;
-	--secondary-color: #2ecc71;
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
     --error-color: #ff0000;
-	--background-color: #f5f5f5;
-	--background-color-window: #c9c9c9;
+
+    --background-color: #f5f5f5;
+    --background-color-window: #c9c9c9;
+
     --box-shadow-large: 3px 3px 10px rgba(0, 0, 0, 0.75);
     --box-shadow-small: 1px 1px 3px rgba(0, 0, 0, 0.25);
-	--text-color: #333333;
+
+    --text-color: #333333;
 }
 
-[data-theme='dark'] {
-	--background-color: rgb(14, 53, 99);
-	--background-color-icon: #1857a0;
-	--background-color-window: #3b82f680;
-	--background-color-window2: #1857a0;
+
+/* ============================= */
+/* DARK THEME                    */
+/* ============================= */
+
+[data-theme="dark"] {
+    --background-color: rgb(14, 53, 99);
+    --background-color-icon: #1857a0;
+    --background-color-window: #3b82f680;
+    --background-color-window2: #1857a0;
+
     --border-icon: 2px outset var(--background-color-window);
     --border-inset: 2px inset var(--background-color-window);
     --border-outset: 2px outset var(--background-color-window);
     --border-solid: 2px solid var(--background-color-window);
     --border-solid2: 2px solid var(--background-color);
-	--text-color-primary: #DDE6ED;
+
+    --text-color-primary: #DDE6ED;
     --text-color-secondary: #0ecfff;
 }
 
-[data-theme='light'] {
+
+/* ============================= */
+/* LIGHT THEME                   */
+/* ============================= */
+
+[data-theme="light"] {
     --background-color: #ebebeb;
     --background-color-icon: #67a5eb;
     --background-color-window: #cccccc;
-    --background-color-window2:#ffffff;
+    --background-color-window2: #ffffff;
+
     --border-icon: 2px outset var(--background-color-window);
     --border-inset: 2px inset var(--background-color-window);
     --border-outset: 2px outset var(--background-color-window);
     --border-solid: 2px solid var(--background-color-window);
     --border-solid2: 2px solid var(--background-color);
-	--text-color-primary: #333333;
+
+    --text-color-primary: #333333;
     --text-color-secondary: #00598d;
 }
 
-html, body {
-  background-color: var(--background-color);
-  color: var(--text-color-primary);
-  
-}
 
-input::placeholder {
-	opacity: 0.65;
-}
+/* ============================= */
+/* BASE ELEMENT STYLING          */
+/* ============================= */
 
-h1, h2, h3, h4 {
+html,
+body {
+    background-color: var(--background-color);
     color: var(--text-color-primary);
-}
-
-h1 {
-    font-size: 2rem;
-}
-
-h2 {
-    font-size: 1.5rem;
-}
-
-h3 {
-    font-size: 1.25rem;
-}
-
-h4, nav {
-    font-size: 1rem;
-}
-
-p {
-    color: var(--text-color-primary);
-    font-size: 1rem;
 }
 
 .appContainer {
     min-height: 100vh;
 }
 
+input::placeholder {
+    opacity: 0.65;
+}
 
+
+/* ============================= */
+/* TYPOGRAPHY                    */
+/* ============================= */
+
+h1,
+h2,
+h3,
+h4 {
+    color: var(--text-color-primary);
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+h4,
+nav { font-size: 1rem; }
+
+p {
+    color: var(--text-color-primary);
+    font-size: 1rem;
+}
+
+
+/* ============================= */
+/* RESPONSIVE TYPOGRAPHY         */
+/* ============================= */
 
 @media (max-width: 768px) {
-    h1 {
-        font-size: 1.5rem;
-    }
-
-    h2 {
-        font-size: 1.25rem;
-    }
-
-    h3 {
-        font-size: 1rem;
-    }
-
-    h4, nav {
-        font-size: 0.875rem;
-    }
-
-    p {
-        font-size: 0.875rem;
-    }
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.25rem; }
+    h3 { font-size: 1rem; }
+    h4,
+    nav { font-size: 0.875rem; }
+    p { font-size: 0.875rem; }
 }
 
 @media (max-width: 480px) {
-    h1 {
-        font-size: 1.25rem;
-    }
-
-    h2 {
-        font-size: 1rem;
-    }
-
-    h3 {
-        font-size: 0.875rem;
-    }
-
-    h4 {
-        font-size: 0.75rem;
-    }
-
-    p {
-        font-size: 0.75rem;
-    }
+    h1 { font-size: 1.25rem; }
+    h2 { font-size: 1rem; }
+    h3 { font-size: 0.875rem; }
+    h4 { font-size: 0.75rem; }
+    p { font-size: 0.75rem; }
 }
 
 @media (max-width: 375px) {
-    h1 {
-        font-size: 1rem;
-    }
-
-    h2 {
-        font-size: 0.875rem;
-    }
-
-    h3 {
-        font-size: 0.75rem;
-    }
-
-    h4 {
-        font-size: 0.625rem;
-    }
-
-    p {
-        font-size: 0.625rem;
-    }
+    h1 { font-size: 1rem; }
+    h2 { font-size: 0.875rem; }
+    h3 { font-size: 0.75rem; }
+    h4 { font-size: 0.625rem; }
+    p { font-size: 0.625rem; }
 }

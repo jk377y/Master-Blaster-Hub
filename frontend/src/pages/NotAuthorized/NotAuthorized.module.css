@@ -1,3 +1,7 @@
+/* ============================= */
+/* PAGE CONTAINER                */
+/* ============================= */
+
 .container {
     display: flex;
     flex-direction: column;
@@ -8,17 +12,26 @@
     margin-top: 1rem;
     background-color: var(--background-color);
 }
-.errorHeading {
-    font-weight: bold;
-    color: var(--error-color);
-    text-align: center;
-    text-shadow: 2px 2px 4px black;
-}
 
+
+/* ============================= */
+/* ERROR TEXT                    */
+/* ============================= */
+
+.errorHeading,
 .errorMessage {
     color: var(--error-color);
     text-shadow: 2px 2px 4px black;
 }
+
+.errorHeading {
+    font-weight: bold;
+}
+
+
+/* ============================= */
+/* REROUTE BUTTON                */
+/* ============================= */
 
 .rerouteButton {
     padding: 10px 20px;

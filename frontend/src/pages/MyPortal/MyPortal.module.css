@@ -1,163 +1,191 @@
+/* ============================= */
+/* PAGE LAYOUT                   */
+/* ============================= */
+
 .myPortalContainer {
-	position: relative;
-	min-height: calc(100vh - 190px);
-	margin-top: 1rem;
-	padding: 1rem;
+    position: relative;
+    min-height: calc(100vh - 190px);
+    margin-top: 1rem;
+    padding: 1rem;
 }
 
 .myPortalGreeting {
-	margin-bottom: 1rem;
-	display: flex;
-	flex-direction: column;
-	gap: 0.25rem;
-	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .myPortalGreeting h2 {
-	color: var(--text-color-secondary);
+    color: var(--text-color-secondary);
 }
 
+
+/* ============================= */
+/* USER INFO CARD                */
+/* ============================= */
+
 .userInfoCard {
-	background-color: var(--background-color-window);
-	padding: 1rem;
-	border-radius: 8px;
-	box-shadow: var(--box-shadow-large);
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-	width: fit-content;
-	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    background-color: var(--background-color-window);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow-large);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: fit-content;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .userInfoCard h3 {
-	color: var(--text-color-secondary);
+    color: var(--text-color-secondary);
 }
 
-/* Dynamic Content Panel */
+
+/* ============================= */
+/* ACTION BUTTONS                */
+/* ============================= */
+
+.actionButtonsContainer {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.largeButton {
+    max-width: 200px;
+    padding: 0.35rem 0.75rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    background-color: var(--background-color-window);
+    color: var(--text-color-primary);
+    border: 2px outset var(--background-color-window);
+}
+
+.largeButton.active {
+    border: 2px solid var(--text-color-secondary);
+}
+
+.largeButton:hover,
+.largeButton:hover h4 {
+    color: var(--text-color-secondary);
+    cursor: pointer;
+}
+
+.largeButtonDelete:hover {
+    background-color: red;
+    color: white;
+    border: 2px dotted black;
+    cursor: pointer;
+}
+
+
+/* ============================= */
+/* DYNAMIC CONTENT PANEL         */
+/* ============================= */
 
 .dynamicContentPanel {
-	margin-top: 1rem;
-	display: flex;
-	max-width: 800px;
+    position: relative;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
     max-height: 600px;
-	flex-direction: column;
-	/* align-items: center; */
-	/* gap: 1rem; */
-	border: 4px inset var(--background-color-window2);
+    border: 4px inset var(--background-color-window2);
     overflow-y: auto;
     overflow-x: auto;
-    /* padding: 0.75rem; */
-    position: relative;
 }
 
 .dynamicContentPanel > div {
-    /* margin-top: 3.5rem; */
     padding: 0.5rem;
-    /* max-height: 600px; */
-    /* display: flex; */
 }
 
 .dynamicContentPanel > div > h3 {
     margin-bottom: 0.5rem;
 }
 
+
+/* ============================= */
+/* REFRESH BUTTON                */
+/* ============================= */
+
 .refreshButtonContainer {
     display: flex;
     flex-wrap: wrap;
-	gap: 0.5rem;
-	margin-bottom: 1rem;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .refreshButton {
-	padding: 0.35rem 0.75rem;
-	font-size: 0.75rem;
-	border-radius: 6px;
-	background-color: var(--background-color-window);
-	color: var(--text-color-primary);
-	border: 2px outset var(--background-color-window);
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    background-color: var(--background-color-window);
+    color: var(--text-color-primary);
+    border: 2px outset var(--background-color-window);
 }
 
 .refreshButton:hover {
-	color: var(--text-color-secondary);
-	cursor: pointer;
+    color: var(--text-color-secondary);
+    cursor: pointer;
 }
 
 
+/* ============================= */
+/* ADDRESS / SERVICE PANELS      */
+/* ============================= */
 
-.addAddressContainer {
-	background-color: var(--background-color-window);
-	padding: 1rem;
-	box-shadow: var(--box-shadow-large);
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
+.addAddressContainer,
+.deleteAddressContainer,
+.requestServiceContainer {
+    background-color: var(--background-color-window);
+    padding: 1rem;
+    box-shadow: var(--box-shadow-large);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .addAddressContainer > div {
-	width: 800px;
-	max-width: calc(100%);
-	display: flex;
-	flex-direction: column;
+    width: 800px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-.addAddressContainer input[type='text'] {
-	width: 800px;
-	max-width: 100%;
-	background-color: white;
-	color: black;
-	padding: 0.15rem;
-	font-size: 1em;
-	border-radius: 6px;
-	border: 2px solid var(--background-color);
+.addAddressContainer input[type="text"],
+.deleteAddressContainer > select,
+.requestServiceContainer > select {
+    width: 800px;
+    max-width: 100%;
+    background-color: white;
+    color: black;
+    padding: 0.15rem;
+    font-size: 1em;
+    border-radius: 6px;
+    border: 2px solid var(--background-color);
 }
+
+
+/* ============================= */
+/* CHECKBOX                      */
+/* ============================= */
 
 .checkboxContainer {
-	display: flex;
+    display: flex;
 }
 
 .checkboxLabel {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
-.deleteAddressContainer {
-	background-color: var(--background-color-window);
-	padding: 1rem;
-	/* border-radius: 8px; */
-	box-shadow: var(--box-shadow-large);
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-}
-.deleteAddressContainer > select {
-	width: 800px;
-	max-width: calc(100%);
-	background-color: white;
-	color: black;
-	padding: 0.15rem;
-	font-size: 1em;
-	border-radius: 6px;
-	border: 2px solid var(--background-color);
-}
-.requestServiceContainer {
-	background-color: var(--background-color-window);
-	padding: 1rem;
-	/* border-radius: 8px; */
-	box-shadow: var(--box-shadow-large);
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-}
-.requestServiceContainer > select {
-	width: 800px;
-	max-width: calc(100%);
-	background-color: white;
-	color: black;
-	padding: 0.15rem;
-	font-size: 1em;
-	border-radius: 6px;
-	border: 2px solid var(--background-color);
-}
+
+
+/* ============================= */
+/* SQUARE FOOTAGE INPUT          */
+/* ============================= */
 
 .sqftInputContainer {
     display: flex;
@@ -171,96 +199,43 @@
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.527);
 }
 
-.sqftInputContainer input[type='number'] {
+.sqftInputContainer input[type="number"] {
     width: 100px;
 }
 
-.toast {
-	position: fixed;
-	top: 50%;
-	right: 50%;
-	transform: translate(50%, -50%);
-	background-color: var(--background-color-icon);
-	color: var(--text-color-secondary);
-	padding: 0.75rem 1.25rem;
-	border-radius: 6px;
-	box-shadow: var(--box-shadow-large);
-	border: 2px solid var(--text-color-secondary);
-	z-index: 999;
-	opacity: 1;
-	font-size: 1.5rem;
-}
 
-.actionButtonsContainer {
-	display: flex;
-	gap: 0.5rem;
-	margin: 1rem 0;
-}
-
-.largeButton {
-	max-width: 200px;
-	padding: 0.35rem 0.75rem;
-	font-size: 1rem;
-	border-radius: 6px;
-	background-color: var(--background-color-window);
-	color: var(--text-color-primary);
-	border: 2px outset var(--background-color-window);
-}
-
-.largeButton.active {
-	border: 2px solid var(--text-color-secondary);
-}
-
-.largeButton:hover,
-.largeButton:hover h4 {
-	color: var(--text-color-secondary);
-	cursor: pointer;
-}
-
-.largeButtonDelete:hover {
-	background-color: red;
-	color: white;
-	border: 2px dotted black;
-	cursor: pointer;
-}
-
-.tableWrapper {
-	width: 100%;
-	min-width: 700px;
-	/* padding: 0.5rem; */
-	font-size: 0.9rem;
-	max-height: 600px;
-	/* overflow-x: auto; */
-}
+/* ============================= */
+/* TABLE STYLING                 */
+/* ============================= */
 
 .resultsTable {
-	width: 100%;
-	border-collapse: separate;
-	border-spacing: 0;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
 .resultsTable th,
 .resultsTable td {
-	border: 1px solid var(--text-color-primary);
-	padding: 0.25rem;
-	text-align: left;
+    border: 1px solid var(--text-color-primary);
+    padding: 0.25rem;
+    text-align: left;
 }
 
 .resultsTable thead th {
-	position: sticky;
-	top: 0;
-	background-color: var(--background-color-window2);
-	z-index: 2;
-	box-shadow: 0 2px 0 var(--text-color-primary);
-	/* border-bottom: 1px solid var(--text-color-primary); */
+    position: sticky;
+    top: 0;
+    background-color: var(--background-color-window2);
+    z-index: 2;
+    box-shadow: 0 2px 0 var(--text-color-primary);
 }
+
+
+/* ============================= */
+/* SMALL ACTION BUTTONS          */
+/* ============================= */
 
 .smallButtonContainer {
     display: flex;
-    /* flex-direction: row; */
-    /* width: fit-content; */
-    /* align-items: center; */
-    /* justify-content: center; */
     gap: 0.5rem;
 }
 
@@ -271,7 +246,6 @@
     background-color: var(--background-color-window);
     color: var(--text-color-primary);
     border: 2px outset var(--background-color-window);
-    /* margin-right: 0.5rem; */
 }
 
 .smallButton:hover {
@@ -279,24 +253,49 @@
     cursor: pointer;
 }
 
+
+/* ============================= */
+/* STATUS COLOR CODING           */
+/* ============================= */
+
 .statusDanger,
 .statusPending,
 .statusSuccess {
-	background-color: rgb(20, 20, 20) !important;
-	font-weight: 600;
-	font-size: 0.8rem;
-	letter-spacing: 1px;
-	text-align: center !important;
+    background-color: rgb(20, 20, 20) !important;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    text-align: center !important;
 }
 
 .statusPending {
-	color: #ffee00 !important;
+    color: #ffee00 !important;
 }
 
 .statusSuccess {
-	color: #00ff22 !important;
+    color: #00ff22 !important;
 }
 
 .statusDanger {
-	color: #ff0000 !important;
+    color: #ff0000 !important;
+}
+
+
+/* ============================= */
+/* TOAST MESSAGE                 */
+/* ============================= */
+
+.toast {
+    position: fixed;
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+    background-color: var(--background-color-icon);
+    color: var(--text-color-secondary);
+    padding: 0.75rem 1.25rem;
+    border-radius: 6px;
+    box-shadow: var(--box-shadow-large);
+    border: 2px solid var(--text-color-secondary);
+    z-index: 999;
+    font-size: 1.5rem;
 }

@@ -1,3 +1,7 @@
+/* ============================= */
+/* FOOTER CONTAINER              */
+/* ============================= */
+
 .footer {
     height: 60px;
     width: 100%;
@@ -5,45 +9,44 @@
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    /* position: fixed;
-    bottom: 0px; */
     margin: 10px 0;
     border-top: 2px solid var(--text-color-secondary);
     border-bottom: 2px solid var(--text-color-secondary);
-    /* padding: 5px 0; */
 }
-/* 
-.footer hr {
-    width: 100%;
-    border: 1px solid var(--text-color-secondary);
-    margin-bottom: 15px;
-    padding: 5px 0;
-} */
+
+
+/* ============================= */
+/* FOOTER TEXT SECTIONS          */
+/* ============================= */
+
+.footerTop,
+.footerBottom {
+    color: var(--text-color-secondary);
+    text-shadow: 1px 1px 2px black;
+}
 
 .footerTop {
     font-size: 1rem;
-    color: var(--text-color-secondary);
-    text-shadow: 1px 1px 2px black;
-    /* margin-top: 10px; */
-    /* padding-top: 20px; */
 }
 
 .footerBottom {
     font-size: 0.9rem;
-    color: var(--text-color-secondary);
-    text-shadow: 1px 1px 2px black;
-    /* margin-bottom: 10px; */
-    /* padding-bottom: 20px; */
 }
+
+
+/* ============================= */
+/* FOOTER LINK                   */
+/* ============================= */
 
 .footerLink {
     color: var(--text-color-secondary);
     text-decoration: none;
-
 }
+
 .footerLink:hover {
     text-decoration: underline;
 }
+
 .footerLink:visited {
     color: var(--text-color-secondary);
 }
