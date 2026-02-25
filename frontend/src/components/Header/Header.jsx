@@ -1,3 +1,4 @@
+// Main site header with navigation, auth controls, and theme toggle
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import MoonIcon from "../../assets/icons/moon.png";
@@ -6,22 +7,30 @@ import styles from "./Header.module.css";
 
 export const Header = ({ user, onLogout }) => {
     const navigate = useNavigate();
+
+    // Handles logout and redirects to homepage
     const handleLogout = () => {
         onLogout();
         navigate("/");
     };
+
     const authenticated = !!user;
     const role = user?.role;
+
+    // Persisted light/dark theme state
     const [theme, setTheme] = useState(() => {
         return localStorage.getItem("theme") || "dark";
     });
+
     const toggleTheme = () => {
-        setTheme(prev => (prev === "dark" ? "light" : "dark"));
+        setTheme((prev) => (prev === "dark" ? "light" : "dark"));
     };
+
     useEffect(() => {
         localStorage.setItem("theme", theme);
         document.documentElement.setAttribute("data-theme", theme);
     }, [theme]);
+
     return (
         <header className={styles.header}>
             <div className={styles.brandContainer}>
@@ -29,24 +38,46 @@ export const Header = ({ user, onLogout }) => {
                     🌊 Master Blaster Hub
                 </h1>
             </div>
+
             <div className={styles.navigation}>
                 <nav className={styles.nav}>
-                    <NavLink to="/" className={({ isActive }) => isActive 
-                        ? `${styles.link} ${styles.active}` : styles.link}>
+                    <NavLink
+                        to="/"
+                        className={({ isActive }) =>
+                            isActive
+                                ? `${styles.link} ${styles.active}`
+                                : styles.link
+                        }
+                    >
                         <span className={styles.linkText}>Homepage</span>
                     </NavLink>
-                    {authenticated && (
-                        <NavLink to="/myportal" className={({ isActive }) => isActive
-                            ? `${styles.link} ${styles.active}` : styles.link}>
+
+                    {authenticated && role === "CUSTOMER" && (
+                        <NavLink
+                            to="/myportal"
+                            className={({ isActive }) =>
+                                isActive
+                                    ? `${styles.link} ${styles.active}`
+                                    : styles.link
+                            }
+                        >
                             <span className={styles.linkText}>MyPortal</span>
                         </NavLink>
                     )}
+
                     {authenticated && role === "ADMIN" && (
-                        <NavLink to="/admin" className={({ isActive }) => isActive
-                            ? `${styles.link} ${styles.active}` : styles.link}>
+                        <NavLink
+                            to="/admin"
+                            className={({ isActive }) =>
+                                isActive
+                                    ? `${styles.link} ${styles.active}`
+                                    : styles.link
+                            }
+                        >
                             <span className={styles.linkText}>Admin</span>
                         </NavLink>
                     )}
+
                     {authenticated && (
                         <span
                             onClick={handleLogout}
@@ -58,6 +89,7 @@ export const Header = ({ user, onLogout }) => {
                     )}
                 </nav>
             </div>
+
             <img
                 onClick={toggleTheme}
                 className={styles.toggle}

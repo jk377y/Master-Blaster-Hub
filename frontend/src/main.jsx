@@ -1,13 +1,16 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+// Application entry point (React root + router setup)
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { App } from './App.jsx';
-import './styles/global.css';
 
-createRoot(document.getElementById('root')).render(
+import { App } from "./App.jsx";
+import "./styles/global.css";
+
+createRoot(document.getElementById("root")).render(
     <StrictMode>
+        {/* Enables client-side routing */}
         <BrowserRouter>
             <App />
         </BrowserRouter>
-    </StrictMode>,
-)
+    </StrictMode>
+);

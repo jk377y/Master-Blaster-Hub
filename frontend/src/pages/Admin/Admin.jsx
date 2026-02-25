@@ -1,36 +1,58 @@
+// Admin dashboard for database management, search, and reporting
 import { useEffect, useState } from "react";
-import { resetDatabase, searchCustomers, searchJobs, updateCustomer, updateJobStatus } from "../../api/adminApi";
+import {
+    resetDatabase,
+    searchCustomers,
+    searchJobs,
+    updateCustomer,
+    updateJobStatus
+} from "../../api/adminApi";
 import { LoggedInAs } from "../../components/LoggedInAs/LoggedInAs";
 import styles from "./Admin.module.css";
 
 export const Admin = ({ user }) => {
+
+    // View + UI state
     const [isResetting, setIsResetting] = useState(false);
-    const [activeView, setActiveView] = useState(null); // null | "search" | "reset"
+    const [activeView, setActiveView] = useState(null); // null | "customers" | "search" | "reset"
     const [toastMessage, setToastMessage] = useState(null);
+
+    // Customer search state
     const [customerField, setCustomerField] = useState("all");
     const [customerValue, setCustomerValue] = useState("");
     const [customerResults, setCustomerResults] = useState([]);
     const [isSearchingCustomers, setIsSearchingCustomers] = useState(false);
     const [editingCustomerId, setEditingCustomerId] = useState(null);
+
+    // Job search state
     const [jobResults, setJobResults] = useState([]);
     const [jobField, setJobField] = useState("all");
     const [jobValue, setJobValue] = useState("");
     const [isSearchingJobs, setIsSearchingJobs] = useState(false);
+
+    // Inline customer edit form state
     const [editForm, setEditForm] = useState({
         firstName: "",
         lastName: "",
         isActive: true
     });
+
     const [reportData, setReportData] = useState(null);
+
+    // Handles full database reset
     const handleDatabaseReset = async () => {
         const confirmReset = window.confirm(
             "This will completely wipe and rebuild the database.\n\nAre you sure?"
         );
         if (!confirmReset) return;
+
         const startTime = Date.now();
+
         try {
             setIsResetting(true);
             const message = await resetDatabase();
+
+            // Small delay to ensure visible feedback
             const elapsed = Date.now() - startTime;
             const remaining = 1000 - elapsed;
             if (remaining > 0) {
@@ -38,6 +60,7 @@ export const Admin = ({ user }) => {
                     setTimeout(resolve, remaining)
                 );
             }
+
             setToastMessage(message);
         } catch (error) {
             console.error("Error resetting database:", error);
@@ -46,14 +69,17 @@ export const Admin = ({ user }) => {
             setIsResetting(false);
         }
     };
+
+    // Executes customer search
     const handleCustomerSearch = async () => {
         try {
             setIsSearchingCustomers(true);
+
             const results = await searchCustomers(
                 customerField === "all" ? null : customerField,
                 customerValue
             );
-            // console.log("Customer search results:", results);
+
             setCustomerResults(results);
         } catch (err) {
             console.error("Customer search failed:", err);
@@ -62,16 +88,20 @@ export const Admin = ({ user }) => {
             setIsSearchingCustomers(false);
         }
     };
+
+    // Saves edited customer
     const handleSaveCustomer = async (customerId) => {
         try {
             const message = await updateCustomer(customerId, editForm);
             setToastMessage(message);
             await handleCustomerSearch();
             setEditingCustomerId(null);
-        } catch (err) {
+        } catch {
             setToastMessage("Update failed.");
         }
     };
+
+    // Enables inline editing
     const handleEditCustomer = (customer) => {
         setEditingCustomerId(customer.id);
         setEditForm({
@@ -80,13 +110,17 @@ export const Admin = ({ user }) => {
             isActive: customer.isActive
         });
     };
+
+    // Executes job search
     const handleJobSearch = async () => {
         try {
             setIsSearchingJobs(true);
+
             const results = await searchJobs(
                 jobField === "all" ? null : jobField,
                 jobValue
             );
+
             setJobResults(results);
         } catch {
             setToastMessage("Job search failed.");
@@ -94,6 +128,8 @@ export const Admin = ({ user }) => {
             setIsSearchingJobs(false);
         }
     };
+
+    // Updates job status
     const handleJobStatusUpdate = async (jobId, newStatus) => {
         try {
             const message = await updateJobStatus(jobId, newStatus);
@@ -103,9 +139,8 @@ export const Admin = ({ user }) => {
             setToastMessage("Status update failed.");
         }
     };
-    // const handleRefreshJobs = async () => {
-    //     await handleJobSearch();
-    // };
+
+    // Refreshes job results
     const handleRefreshJobs = async () => {
         try {
             await handleJobSearch();
@@ -114,6 +149,8 @@ export const Admin = ({ user }) => {
             setToastMessage("Refresh failed.");
         }
     };
+
+    // Maps job status to styling class
     const getStatusClass = (status) => {
         switch (status) {
             case "REQUESTED":
@@ -132,40 +169,8 @@ export const Admin = ({ user }) => {
                 return "";
         }
     };
-    // const handleGenerateReport = () => {
-    //     const timestamp = new Date().toLocaleString();
-    //     if (activeView === "customers" && customerResults.length > 0) {
-    //         setReportData({
-    //             title: "Customer Search Report",
-    //             timestamp,
-    //             columns: ["Email", "First Name", "Last Name", "Role", "Active", "Created"],
-    //             rows: customerResults.map(c => [
-    //                 c.email,
-    //                 c.firstName,
-    //                 c.lastName,
-    //                 c.role,
-    //                 c.isActive ? "Yes" : "No",
-    //                 new Date(c.createdAt).toLocaleString()
-    //             ])
-    //         });
-    //     }
-    //     if (activeView === "search" && jobResults.length > 0) {
-    //         setReportData({
-    //             title: "Service Job Report",
-    //             timestamp,
-    //             columns: ["Email", "City", "Service", "Quote", "Status"],
-    //             rows: jobResults.map(j => [
-    //                 j.userEmail,
-    //                 j.city,
-    //                 j.serviceName,
-    //                 j.calculatedQuote != null
-    //                     ? `$${Number(j.calculatedQuote).toFixed(2)}`
-    //                     : "-",
-    //                 j.status
-    //             ])
-    //         });
-    //     }
-    // };
+
+    // Exports current view results as CSV
     const handleExportCSV = () => {
         const timestamp = new Date().toLocaleString();
         let title = "";
@@ -174,13 +179,13 @@ export const Admin = ({ user }) => {
 
         if (activeView === "customers" && customerResults.length > 0) {
             title = "Customer_Search_Report";
-            columns = ["First Name", "Last Name", "Email", "Street", "City","Role", "Active", "Created"];  //! Updated columns to include Street and City
+            columns = ["First Name", "Last Name", "Email", "Street", "City", "Role", "Active", "Created"];
             rows = customerResults.map(c => [
                 c.firstName,
                 c.lastName,
                 c.email,
-                c.street,//!  added this line to include street in the report
-                c.city, //!  added this line to include city in the report
+                c.street,
+                c.city,
                 c.role,
                 c.isActive ? "Yes" : "No",
                 new Date(c.createdAt).toLocaleString()
@@ -194,7 +199,7 @@ export const Admin = ({ user }) => {
                 j.firstName,
                 j.lastName,
                 j.userEmail,
-                j.street,//added this line to include address in the report
+                j.street,
                 j.city,
                 j.serviceName,
                 j.calculatedQuote != null
@@ -225,6 +230,8 @@ export const Admin = ({ user }) => {
 
         URL.revokeObjectURL(url);
     };
+
+    // Auto-clears toast messages
     useEffect(() => {
         if (!toastMessage) return;
 
@@ -234,6 +241,7 @@ export const Admin = ({ user }) => {
 
         return () => clearTimeout(timer);
     }, [toastMessage]);
+
     if (!user) {
         return (
             <div className={styles.adminContainer}>
@@ -245,10 +253,18 @@ export const Admin = ({ user }) => {
 
     return (
         <div className={styles.adminContainer}>
+
+            {/* Logged-in user indicator */}
             <LoggedInAs user={user} />
-            {toastMessage && <p className={styles.toast}>{toastMessage}</p>}
+
+            {/* Toast / status message */}
+            {toastMessage && (
+                <p className={styles.toast}>{toastMessage}</p>
+            )}
+
             <h2>Admin Page</h2>
-            {/* ACTION BUTTONS */}
+
+            {/* ===== VIEW SELECTOR BUTTONS ===== */}
             <div className={styles.actionButtonsContainer}>
                 <button
                     className={`${styles.largeButton} ${activeView === "customers" ? styles.active : ""}`}
@@ -256,12 +272,14 @@ export const Admin = ({ user }) => {
                 >
                     <h4>Customers</h4>
                 </button>
+
                 <button
                     className={`${styles.largeButton} ${activeView === "search" ? styles.active : ""}`}
                     onClick={() => setActiveView("search")}
                 >
                     <h4>Service Jobs</h4>
                 </button>
+
                 <button
                     className={`${styles.largeButton} ${activeView === "reset" ? styles.active : ""}`}
                     onClick={() => setActiveView("reset")}
@@ -269,20 +287,29 @@ export const Admin = ({ user }) => {
                     <h4>Database Reset</h4>
                 </button>
             </div>
-            {/* DYNAMIC CONTENT PANEL */}
+
+            {/* ===== DYNAMIC CONTENT PANEL ===== */}
             <div className={styles.dynamicContentPanel}>
+
                 {!activeView && (
                     <p>Select an action above to get started.</p>
                 )}
+
+                {/* ================= CUSTOMERS VIEW ================= */}
                 {activeView === "customers" && (
                     <div>
+
+                        {/* Export button */}
                         <button
                             onClick={handleExportCSV}
                             className={styles.reportLargeButton}
                         >
                             <h5>Export Report (CSV)</h5>
                         </button>
+
                         <h3>Search Customers</h3>
+
+                        {/* Customer search controls */}
                         <div className={styles.customerSearchControls}>
                             <input
                                 className={styles.customerSearchBar}
@@ -291,6 +318,7 @@ export const Admin = ({ user }) => {
                                 value={customerValue}
                                 onChange={(e) => setCustomerValue(e.target.value)}
                             />
+
                             <select
                                 className={styles.customerSearchSelect}
                                 value={customerField}
@@ -301,6 +329,7 @@ export const Admin = ({ user }) => {
                                 <option value="lastname">Last Name</option>
                                 <option value="role">Role</option>
                             </select>
+
                             <button
                                 className={styles.customerSearchButton}
                                 onClick={handleCustomerSearch}
@@ -309,6 +338,8 @@ export const Admin = ({ user }) => {
                                 {isSearchingCustomers ? "Searching..." : "Search"}
                             </button>
                         </div>
+
+                        {/* Customer results table */}
                         {customerResults.length > 0 && (
                             <div className={styles.tableWrapper}>
                                 <table className={styles.resultsTable}>
@@ -328,6 +359,7 @@ export const Admin = ({ user }) => {
                                     <tbody>
                                         {customerResults.map(customer => (
                                             <tr key={customer.id}>
+                                                {/* Editable name fields */}
                                                 <td>
                                                     {editingCustomerId === customer.id ? (
                                                         <input
@@ -343,6 +375,7 @@ export const Admin = ({ user }) => {
                                                         customer.firstName
                                                     )}
                                                 </td>
+
                                                 <td>
                                                     {editingCustomerId === customer.id ? (
                                                         <input
@@ -358,10 +391,13 @@ export const Admin = ({ user }) => {
                                                         customer.lastName
                                                     )}
                                                 </td>
+
                                                 <td>{customer.email}</td>
                                                 <td>{customer.street}</td>
                                                 <td>{customer.city}</td>
                                                 <td>{customer.role}</td>
+
+                                                {/* Editable active status */}
                                                 <td>
                                                     {editingCustomerId === customer.id ? (
                                                         <select
@@ -380,25 +416,33 @@ export const Admin = ({ user }) => {
                                                         customer.isActive ? "Yes" : "No"
                                                     )}
                                                 </td>
+
                                                 <td>
                                                     {new Date(customer.createdAt).toLocaleString()}
                                                 </td>
+
+                                                {/* Edit / Save controls */}
                                                 <td>
                                                     {editingCustomerId === customer.id ? (
                                                         <>
                                                             <button
                                                                 className={styles.customerEditSaveButton}
-                                                                onClick={() => handleSaveCustomer(customer.id)}>
+                                                                onClick={() => handleSaveCustomer(customer.id)}
+                                                            >
                                                                 Save
                                                             </button>
-                                                            <button className={styles.customerEditCancelButton} onClick={() => setEditingCustomerId(null)}>
+                                                            <button
+                                                                className={styles.customerEditCancelButton}
+                                                                onClick={() => setEditingCustomerId(null)}
+                                                            >
                                                                 Cancel
                                                             </button>
                                                         </>
                                                     ) : (
                                                         <button
                                                             className={styles.customerEditButton}
-                                                            onClick={() => handleEditCustomer(customer)}>
+                                                            onClick={() => handleEditCustomer(customer)}
+                                                        >
                                                             Edit
                                                         </button>
                                                     )}
@@ -411,16 +455,22 @@ export const Admin = ({ user }) => {
                         )}
                     </div>
                 )}
+
+                {/* ================= JOB SEARCH VIEW ================= */}
                 {activeView === "search" && (
                     <div>
 
+                        {/* Export button */}
                         <button
                             onClick={handleExportCSV}
                             className={styles.reportLargeButton}
                         >
                             <h5>Export Report (CSV)</h5>
                         </button>
+
                         <h3>Search Jobs</h3>
+
+                        {/* Job search controls */}
                         <div className={styles.customerSearchControls}>
                             <input
                                 className={styles.customerSearchBar}
@@ -429,6 +479,7 @@ export const Admin = ({ user }) => {
                                 value={jobValue}
                                 onChange={(e) => setJobValue(e.target.value)}
                             />
+
                             <select
                                 className={styles.customerSearchSelect}
                                 value={jobField}
@@ -440,11 +491,16 @@ export const Admin = ({ user }) => {
                                 <option value="servicename">Service</option>
                                 <option value="status">Status</option>
                             </select>
-                            <button 
+
+                            <button
                                 className={styles.customerSearchButton}
-                                onClick={handleJobSearch} disabled={isSearchingJobs}>
+                                onClick={handleJobSearch}
+                                disabled={isSearchingJobs}
+                            >
                                 {isSearchingJobs ? "Searching..." : "Search"}
                             </button>
+
+                            {/* Refresh button */}
                             <div className={styles.refreshButtonContainer}>
                                 <button
                                     className={styles.refreshButton}
@@ -454,6 +510,8 @@ export const Admin = ({ user }) => {
                                 </button>
                             </div>
                         </div>
+
+                        {/* Job results table */}
                         {jobResults.length > 0 && (
                             <table className={styles.resultsTable}>
                                 <thead>
@@ -475,43 +533,52 @@ export const Admin = ({ user }) => {
                                             <td>{job.firstName}</td>
                                             <td>{job.lastName}</td>
                                             <td>{job.userEmail}</td>
-                                            <td>{job.street}</td>  {/* I WANT TO INCLUDE THE STREET VALUE HERE FOR THE JOB */}
+                                            <td>{job.street}</td>
                                             <td>{job.city}</td>
                                             <td>{job.serviceName}</td>
+
                                             <td>
                                                 {job.calculatedQuote != null
                                                     ? `$${Number(job.calculatedQuote).toFixed(2)}`
                                                     : "-"}
                                             </td>
+
                                             <td className={getStatusClass(job.status)}>
                                                 {job.status}
                                             </td>
+
+                                            {/* Status transition buttons */}
                                             <td>
                                                 <div className={styles.smallButtonContainer}>
                                                     {job.status === "REQUESTED" && (
                                                         <button
                                                             className={styles.smallButton}
                                                             onClick={() =>
-                                                            handleJobStatusUpdate(job.id, "QUOTED")
-                                                        }>
+                                                                handleJobStatusUpdate(job.id, "QUOTED")
+                                                            }
+                                                        >
                                                             Quote
                                                         </button>
                                                     )}
+
                                                     {job.status === "APPROVED" && (
                                                         <button
                                                             className={styles.smallButton}
                                                             onClick={() =>
-                                                            handleJobStatusUpdate(job.id, "COMPLETED")
-                                                        }>
+                                                                handleJobStatusUpdate(job.id, "COMPLETED")
+                                                            }
+                                                        >
                                                             Complete
                                                         </button>
                                                     )}
+
                                                     {job.status === "DECLINED" && (
                                                         <button
                                                             className={styles.smallButton}
                                                             onClick={() =>
-                                                            handleJobStatusUpdate(job.id, "CANCELLED")
-                                                        }>
+                                                                handleJobStatusUpdate(job.id, "CANCELLED")
+                                                            }
+                                                        >
                                                             Cancel
                                                         </button>
                                                     )}
@@ -524,6 +591,8 @@ export const Admin = ({ user }) => {
                         )}
                     </div>
                 )}
+
+                {/* ================= DATABASE RESET VIEW ================= */}
                 {activeView === "reset" && (
                     <div>
                         <button
@@ -536,32 +605,6 @@ export const Admin = ({ user }) => {
                     </div>
                 )}
             </div>
-            {/* {reportData && (
-                <div className={styles.reportContainer}>
-                    <h2>Master Blaster Hub</h2>
-                    <h3>{reportData.title}</h3>
-                    <p>Generated: {reportData.timestamp}</p>
-
-                    <table className={styles.resultsTable}>
-                        <thead>
-                            <tr>
-                                {reportData.columns.map((col, idx) => (
-                                    <th key={idx}>{col}</th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {reportData.rows.map((row, rowIdx) => (
-                                <tr key={rowIdx}>
-                                    {row.map((cell, cellIdx) => (
-                                        <td key={cellIdx}>{cell}</td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )} */}
         </div>
     );
 };

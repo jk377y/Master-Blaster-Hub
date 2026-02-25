@@ -1,22 +1,40 @@
+// Customer portal for managing addresses, service requests, and job status
 import { useEffect, useState } from "react";
-import { addAddress, deactivateAddress, fetchCurrentUser, fetchServices, requestJob, updateJobStatus } from "../../api/userApi";
+import {
+    addAddress,
+    deactivateAddress,
+    fetchCurrentUser,
+    fetchServices,
+    requestJob,
+    updateJobStatus
+} from "../../api/userApi";
 import { LoggedInAs } from "../../components/LoggedInAs/LoggedInAs";
 import styles from "./MyPortal.module.css";
 
 export const MyPortal = ({ user }) => {
-    const [activeView, setActiveView] = useState(null); // null | "addAddress" | "deleteAddress" | "requestService" | "status"
+
+    // ===== VIEW STATE =====
+    const [activeView, setActiveView] = useState(null);
+    // null | "addAddress" | "deleteAddress" | "requestService" | "status"
+
+    // ===== USER DATA =====
     const [dbUser, setDbUser] = useState(null);
     const [loadingUser, setLoadingUser] = useState(true);
     const [error, setError] = useState(null);
+
     const addresses = Array.isArray(dbUser?.addresses)
         ? dbUser.addresses
         : [];
-    const [selectedAddressId, setSelectedAddressId] = useState("");
-    const [deleteAddressId, setDeleteAddressId] = useState("");
-    // need to add isActive to address field in the database for this to work properly, but for now we will treat any address without isActive as active (to avoid breaking existing data)
+
+    // Treat missing isActive as active (legacy safety)
     const activeAddresses = addresses.filter(
         (addr) => addr.isActive !== false
     );
+
+    // ===== ADDRESS STATE =====
+    const [selectedAddressId, setSelectedAddressId] = useState("");
+    const [deleteAddressId, setDeleteAddressId] = useState("");
+
     const [newAddress, setNewAddress] = useState({
         street: "",
         city: "",
@@ -24,29 +42,41 @@ export const MyPortal = ({ user }) => {
         zip: "",
         isBillingSameAsService: false
     });
+
+    // Flatten job history across active addresses
     const allJobs = activeAddresses.flatMap(addr =>
         (addr.jobHistory || []).map(job => ({
             ...job,
             addressLabel: `${addr.street}, ${addr.city}`
         }))
     );
+
+    // ===== SERVICE STATE =====
     const [services, setServices] = useState([]);
     const [selectedServiceId, setSelectedServiceId] = useState("");
     const [squareFootage, setSquareFootage] = useState("");
-    const [toastMessage, setToastMessage] = useState(null);
+
     const selectedService = services.find(
         s => s.id === selectedServiceId
     );
+
+    // ===== UI FEEDBACK =====
+    const [toastMessage, setToastMessage] = useState(null);
+
+    // Update job status (approve / decline)
     const handleJobStatusUpdate = async (jobId, newStatus) => {
         try {
             const message = await updateJobStatus(jobId, newStatus);
             setToastMessage(message);
+
             const refreshed = await fetchCurrentUser();
             setDbUser(refreshed);
         } catch {
             setToastMessage("Status update failed.");
         }
     };
+
+    // Refresh jobs from backend
     const handleRefreshJobs = async () => {
         try {
             const refreshed = await fetchCurrentUser();
@@ -56,34 +86,33 @@ export const MyPortal = ({ user }) => {
             setToastMessage("Refresh failed.");
         }
     };
+
+    // Map job status to CSS class
     const getStatusClass = (status) => {
         switch (status) {
             case "REQUESTED":
             case "QUOTED":
                 return styles.statusPending;
-
             case "APPROVED":
             case "COMPLETED":
                 return styles.statusSuccess;
-
             case "DECLINED":
             case "CANCELLED":
                 return styles.statusDanger;
-
             default:
                 return "";
         }
     };
+
+    // Load user data on mount
     useEffect(() => {
         if (!user) return;
 
         async function loadUser() {
             try {
                 const data = await fetchCurrentUser();
-                console.log("Fetched user from DB:", data);
                 setDbUser(data);
-            } catch (err) {
-                console.error("Failed to fetch current user:", err);
+            } catch {
                 setError("Failed to load user data.");
             } finally {
                 setLoadingUser(false);
@@ -92,13 +121,19 @@ export const MyPortal = ({ user }) => {
 
         loadUser();
     }, [user]);
+
+    // Auto-clear toast
     useEffect(() => {
         if (!toastMessage) return;
+
         const timer = setTimeout(() => {
             setToastMessage(null);
         }, 2000);
+
         return () => clearTimeout(timer);
     }, [toastMessage]);
+
+    // Load services when entering request view
     useEffect(() => {
         if (activeView !== "requestService") return;
 
@@ -113,6 +148,8 @@ export const MyPortal = ({ user }) => {
 
         loadServices();
     }, [activeView]);
+
+    // ===== EARLY RETURNS =====
     if (loadingUser) {
         return (
             <div className={styles.myPortalContainer}>
@@ -120,6 +157,7 @@ export const MyPortal = ({ user }) => {
             </div>
         );
     }
+
     if (!dbUser) {
         return (
             <div className={styles.myPortalContainer}>
@@ -127,6 +165,7 @@ export const MyPortal = ({ user }) => {
             </div>
         );
     }
+
     if (error) {
         return (
             <div className={styles.myPortalContainer}>
@@ -135,26 +174,34 @@ export const MyPortal = ({ user }) => {
         );
     }
 
+    // ===== MAIN RENDER =====
     return (
         <div className={styles.myPortalContainer}>
+
             <LoggedInAs user={user} />
 
-            {toastMessage && <p className={styles.toast}>{toastMessage}</p>}
+            {toastMessage && (
+                <p className={styles.toast}>{toastMessage}</p>
+            )}
 
             <div className={styles.myPortalGreeting}>
                 <h2>My Portal</h2>
                 <p>Welcome back, {dbUser.firstName}.</p>
             </div>
+
             {/* USER INFO CARD */}
             <div className={styles.userInfoCard}>
                 <p>Name</p>
-                <h3>{dbUser.firstName} {dbUser.lastName}</h3> {/*currently from the JWT, needs to come from the database*/}
+                <h3>{dbUser.firstName} {dbUser.lastName}</h3>
+
                 <p>Role</p>
-                <h3>{dbUser.role}</h3> {/*needs to come from the database*/}
+                <h3>{dbUser.role}</h3>
+
                 <p>Account ID</p>
-                <h3>{dbUser.id}</h3> {/*needs to come from the database, this will just be displayed as a visual idea... not using this for any functional reason*/}
+                <h3>{dbUser.id}</h3>
+
                 <p>Email</p>
-                <h3>{dbUser.email}</h3> {/*currently from the JWT, needs to come from the database*/}
+                <h3>{dbUser.email}</h3>
             </div>
 
             {/* ACTION BUTTONS */}
@@ -193,7 +240,8 @@ export const MyPortal = ({ user }) => {
                 {!activeView && (
                     <p>Select an action above to get started.</p>
                 )}
-
+                
+                {/* ADD ADDRESS VIEW */}
                 {activeView === "addAddress" && (
                     <div className={styles.addAddressContainer}>
                         <h3>Add New Address</h3>
@@ -290,6 +338,7 @@ export const MyPortal = ({ user }) => {
                     </div>
                 )}
 
+                {/* DELETE ADDRESS VIEW */}
                 {activeView === "deleteAddress" && (
                     <div className={styles.deleteAddressContainer}>
                         <h3>Select Address to Delete</h3>
@@ -338,6 +387,7 @@ export const MyPortal = ({ user }) => {
                     </div>
                 )}
 
+                {/* REQUEST SERVICE VIEW */}
                 {activeView === "requestService" && (
                     <div className={styles.requestServiceContainer}>
                         <h3>Select Address to Request Service</h3>
@@ -424,6 +474,7 @@ export const MyPortal = ({ user }) => {
                     </div>
                 )}
 
+                {/* JOB STATUS VIEW */}
                 {activeView === "status" && (
                     <div>
                         <h3>My Service Requests</h3>

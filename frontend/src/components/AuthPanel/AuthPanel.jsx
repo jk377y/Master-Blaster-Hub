@@ -1,3 +1,4 @@
+// Container component that toggles between Login and Signup forms
 import { useState } from "react";
 import styles from "./AuthPanel.module.css";
 import { LoginForm } from "./LoginForm";
@@ -10,9 +11,15 @@ export const AuthPanel = ({ onLogin }) => {
         <div className={styles.authPanelContainer}>
             <div className={styles.card}>
                 {isSignup ? (
-                    <SignupForm onSwitch={() => setIsSignup(false)} onLogin={onLogin} />
+                    <SignupForm
+                        onSwitch={() => setIsSignup(false)}
+                        onLogin={onLogin}
+                    />
                 ) : (
-                    <LoginForm onLogin={onLogin} onSwitch={() => setIsSignup(true)} />
+                    <LoginForm
+                        onLogin={onLogin}
+                        onSwitch={() => setIsSignup(true)}
+                    />
                 )}
             </div>
         </div>

@@ -1,8 +1,11 @@
-import styles from './TechStack.module.css';
+// Displays technology stack and deployment overview
+import styles from "./TechStack.module.css";
 
 export const TechStack = () => {
     return (
         <div className={styles.container}>
+
+            {/* Page heading + summary */}
             <h2>Technology Stack & Deployment</h2>
             <p className={styles.description}>
                 Master Blaster Hub is a full-stack web application built with a modern
@@ -10,7 +13,10 @@ export const TechStack = () => {
                 containerized infrastructure.
             </p>
 
+            {/* Stack cards */}
             <div className={styles.cardGroup}>
+
+                {/* Frontend stack */}
                 <div className={styles.card}>
                     <h3 className={styles.cardTitle}>Frontend</h3>
                     <ul>
@@ -24,6 +30,7 @@ export const TechStack = () => {
                     </ul>
                 </div>
 
+                {/* Backend stack */}
                 <div className={styles.card}>
                     <h3 className={styles.cardTitle}>Backend</h3>
                     <ul>
@@ -38,8 +45,12 @@ export const TechStack = () => {
                         <li>Maven</li>
                     </ul>
                 </div>
+
+                {/* Deployment & infrastructure */}
                 <div className={styles.card}>
-                    <h3 className={styles.cardTitle}>Deployment & Infrastructure</h3>
+                    <h3 className={styles.cardTitle}>
+                        Deployment & Infrastructure
+                    </h3>
                     <ul>
                         <li>AWS S3 (Static Frontend Hosting)</li>
                         <li>AWS CloudFront (CDN)</li>
@@ -50,8 +61,8 @@ export const TechStack = () => {
                         <li>Docker (Backend Containerization)</li>
                     </ul>
                 </div>
-            </div>
 
+            </div>
         </div>
     );
 };

@@ -1,3 +1,4 @@
+// Restricts route access based on authentication and role
 import { Navigate } from "react-router-dom";
 
 export const ProtectedRoute = ({ user, allowedRoles, children }) => {

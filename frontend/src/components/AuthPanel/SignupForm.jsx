@@ -1,3 +1,4 @@
+// Handles new account creation and auto-login
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signup } from "../../api/authApi";
@@ -6,6 +7,7 @@ import styles from "./AuthPanel.module.css";
 
 export const SignupForm = ({ onSwitch, onLogin }) => {
     const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -13,22 +15,28 @@ export const SignupForm = ({ onSwitch, onLogin }) => {
         password: "",
         confirmPassword: ""
     });
+
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
         });
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
+
         if (formData.password !== formData.confirmPassword) {
             setError("Passwords do not match.");
             return;
         }
+
         setLoading(true);
+
         try {
             const response = await signup({
                 firstName: formData.firstName,
@@ -36,18 +44,21 @@ export const SignupForm = ({ onSwitch, onLogin }) => {
                 email: formData.email,
                 password: formData.password
             });
+
             saveAuth(response.token);
+
             const decodedUser = getDecodedToken();
-            if (!decodedUser) {
-                throw new Error("Signup failed.");
-            }
+            if (!decodedUser) throw new Error("Signup failed.");
+
             const userData = {
                 firstName: decodedUser.firstName,
                 role: decodedUser.role,
                 email: decodedUser.sub
             };
+
             localStorage.setItem("authUser", JSON.stringify(userData));
             onLogin(userData);
+
             navigate("/myportal");
         } catch (err) {
             if (err.status === 409) {
@@ -59,10 +70,13 @@ export const SignupForm = ({ onSwitch, onLogin }) => {
             setLoading(false);
         }
     };
+
     return (
         <form onSubmit={handleSubmit}>
             <h2 className={styles.title}>Sign Up</h2>
+
             {error && <div className={styles.error}>{error}</div>}
+
             <div className={styles.field}>
                 <input
                     name="firstName"
@@ -73,6 +87,7 @@ export const SignupForm = ({ onSwitch, onLogin }) => {
                     onChange={handleChange}
                 />
             </div>
+
             <div className={styles.field}>
                 <input
                     name="lastName"
@@ -83,6 +98,7 @@ export const SignupForm = ({ onSwitch, onLogin }) => {
                     onChange={handleChange}
                 />
             </div>
+
             <div className={styles.field}>
                 <input
                     name="email"
@@ -93,6 +109,7 @@ export const SignupForm = ({ onSwitch, onLogin }) => {
                     onChange={handleChange}
                 />
             </div>
+
             <div className={styles.field}>
                 <input
                     name="password"
@@ -103,6 +120,7 @@ export const SignupForm = ({ onSwitch, onLogin }) => {
                     onChange={handleChange}
                 />
             </div>
+
             <div className={styles.field}>
                 <input
                     name="confirmPassword"
@@ -113,11 +131,19 @@ export const SignupForm = ({ onSwitch, onLogin }) => {
                     onChange={handleChange}
                 />
             </div>
-            <button type="submit" className={styles.button} disabled={loading} >
+
+            <button
+                type="submit"
+                className={styles.button}
+                disabled={loading}
+            >
                 {loading ? "Creating..." : "Create Account"}
             </button>
+
             <p className={styles.switchText}>
-                <span onClick={onSwitch} className={styles.link}> Login Instead </span>
+                <span onClick={onSwitch} className={styles.link}>
+                    Login Instead
+                </span>
             </p>
         </form>
     );

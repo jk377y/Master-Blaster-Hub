@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 public class JobController {
 
     private final UserRepository userRepository;
-    private final PermissionServiceFactory permissionServiceFactory;
     private final ServiceRepository serviceRepository;
 
     // Injects required repositories and services
@@ -22,7 +21,6 @@ public class JobController {
                          PermissionServiceFactory permissionServiceFactory,
                          ServiceRepository serviceRepository) {
         this.userRepository = userRepository;
-        this.permissionServiceFactory = permissionServiceFactory;
         this.serviceRepository = serviceRepository;
     }
 
