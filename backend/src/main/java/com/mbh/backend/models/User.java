@@ -3,78 +3,63 @@ package com.mbh.backend.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.List;
 
 @Document(collection = "users")
+// Mongo document representing an application user
 public class User extends BaseEntity {
 
     @Indexed(unique = true)
     private String email;
+
     @JsonIgnore
     private String passwordHash;
+
     private String firstName;
     private String lastName;
     private Role role;
     private Boolean isActive;
-    private Boolean isSystemAccount; // true ONLY for masterAdmin; using this flag to prevent deletion of masterAdmin account
+    private Boolean isSystemAccount;
     private List<Address> addresses;
-    
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
-    public String getPasswordHash() {
-        return passwordHash;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPasswordHash() { return passwordHash; }
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
+    public String getFirstName() { return firstName; }
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public String getLastName() {
-        return lastName;
-    }
+    public String getLastName() { return lastName; }
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public Role getRole() {
-        return role;
-    }
-    public void setRole(Role role) {
-        this.role = role;
-    }
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
 
-    public Boolean getIsActive() {
-        return isActive;
-    }
+    public Boolean getIsActive() { return isActive; }
     public void setIsActive(Boolean active) {
-        isActive = active;
+        this.isActive = active;
     }
 
-    public Boolean getIsSystemAccount() {
-        return isSystemAccount;
-    }
+    public Boolean getIsSystemAccount() { return isSystemAccount; }
     public void setIsSystemAccount(Boolean systemAccount) {
-        isSystemAccount = systemAccount;
+        this.isSystemAccount = systemAccount;
     }
 
-    public List<Address> getAddresses() {
-        return addresses;
-    }
+    public List<Address> getAddresses() { return addresses; }
     public void setAddresses(List<Address> addresses) {
         this.addresses = addresses;
     }
 
+    // Default permission level for regular users
     public String getPermissions() {
         return "BASIC_ACCESS";
     }

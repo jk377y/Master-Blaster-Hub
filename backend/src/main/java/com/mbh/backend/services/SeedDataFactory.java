@@ -1,17 +1,17 @@
 package com.mbh.backend.services;
 
 import com.mbh.backend.models.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
+// Builds seed data for services and users
 public class SeedDataFactory {
 
-    // ---------------------------------------
-    // SERVICES
-    // ---------------------------------------
+    // Creates default service catalog
     public static List<Service> buildDefaultServices() {
 
         Service driveway = new Service();
@@ -62,14 +62,10 @@ public class SeedDataFactory {
         return List.of(driveway, houseWash, patio, gutter, fence);
     }
 
-    // ---------------------------------------
-    // DEMO CUSTOMER WITH FIXED ADDRESSES + JOBS
-    // ---------------------------------------
-
+    // Builds demo customer with fixed addresses and job history
     public static User buildDemoCustomerWithData(
             List<Service> services,
-            PasswordEncoder passwordEncoder
-    ) {
+            PasswordEncoder passwordEncoder) {
 
         User customer = new User();
         customer.setEmail("customer@masterblasterhub.com");
@@ -85,9 +81,11 @@ public class SeedDataFactory {
         addresses.add(buildFixedAddress("257 Main St", services));
         addresses.add(buildFixedAddress("900 Oak Drive", services));
         customer.setAddresses(addresses);
+
         return customer;
     }
 
+    // Builds fixed address for demo account
     private static Address buildFixedAddress(String street, List<Service> services) {
 
         Address address = new Address();
@@ -98,14 +96,18 @@ public class SeedDataFactory {
         address.setZip("75001");
         address.setIsBillingSameAsService(true);
         address.setJobHistory(buildFixedJobsForAddress(services));
+
         return address;
     }
 
+    // Builds fixed job history entries
     private static List<JobHistory> buildFixedJobsForAddress(List<Service> services) {
 
         List<JobHistory> jobs = new ArrayList<>();
+
         for (int i = 0; i < 3 && i < services.size(); i++) {
             Service service = services.get(i);
+
             JobHistory job = new JobHistory();
             job.setId(java.util.UUID.randomUUID().toString());
             job.setServiceId(service.getId());
@@ -113,36 +115,46 @@ public class SeedDataFactory {
             job.setPricingType(service.getPricingType());
             job.setPriceUsed(service.getBasePrice());
             job.setMinimumCharge(service.getMinimumCharge());
+
             double squareFootage = 1200;
+
             if (service.getPricingType() == PricingType.PER_SQFT) {
                 job.setSquareFootage(squareFootage);
             }
+
             double calculated = service.getPricingType() == PricingType.PER_SQFT
                     ? squareFootage * service.getBasePrice()
                     : service.getBasePrice();
+
             if (calculated < service.getMinimumCharge()) {
                 calculated = service.getMinimumCharge();
             }
+
             job.setCalculatedQuote(calculated);
+
             if (i == 0) job.setStatus(JobStatus.REQUESTED);
             if (i == 1) job.setStatus(JobStatus.QUOTED);
             if (i == 2) job.setStatus(JobStatus.APPROVED);
+
             job.setRequestedDate(Instant.now().minusSeconds(86400));
             job.setCompletedDate(null);
+
             jobs.add(job);
         }
+
         return jobs;
     }
 
-    // ---------------------------------------
-    // RANDOM MOCK USERS
-    // ---------------------------------------
-
-    public static List<User> buildMockUsers(List<Service> services, PasswordEncoder passwordEncoder) {
+    // Builds randomized mock users with addresses and jobs
+    public static List<User> buildMockUsers(
+            List<Service> services,
+            PasswordEncoder passwordEncoder) {
 
         List<User> users = new ArrayList<>();
         Random random = new Random();
+
         for (int i = 1; i <= 50; i++) {
+
             User user = new User();
             user.setEmail("user" + i + "@test.com");
             user.setPasswordHash(passwordEncoder.encode("pw"));
@@ -152,9 +164,12 @@ public class SeedDataFactory {
             user.setIsActive(true);
             user.setIsSystemAccount(false);
             user.setCreatedAt(Instant.now());
+
             List<Address> addresses = new ArrayList<>();
             int addressCount = 1 + random.nextInt(2);
+
             for (int a = 0; a < addressCount; a++) {
+
                 Address address = new Address();
                 address.setId(java.util.UUID.randomUUID().toString());
                 address.setStreet((100 + random.nextInt(900)) + " Main St");
@@ -162,10 +177,15 @@ public class SeedDataFactory {
                 address.setState("TX");
                 address.setZip("75001");
                 address.setIsBillingSameAsService(true);
+
                 List<JobHistory> jobs = new ArrayList<>();
                 int jobCount = 1 + random.nextInt(3);
+
                 for (int j = 0; j < jobCount; j++) {
-                    Service randomService = services.get(random.nextInt(services.size()));
+
+                    Service randomService =
+                            services.get(random.nextInt(services.size()));
+
                     JobHistory job = new JobHistory();
                     job.setId(java.util.UUID.randomUUID().toString());
                     job.setServiceId(randomService.getId());
@@ -173,28 +193,46 @@ public class SeedDataFactory {
                     job.setPricingType(randomService.getPricingType());
                     job.setPriceUsed(randomService.getBasePrice());
                     job.setMinimumCharge(randomService.getMinimumCharge());
-                    double squareFootage = 500 + random.nextInt(2000);
+
+                    double squareFootage =
+                            500 + random.nextInt(2000);
+
                     if (randomService.getPricingType() == PricingType.PER_SQFT) {
                         job.setSquareFootage(squareFootage);
                     }
-                    double calculated = randomService.getPricingType() == PricingType.PER_SQFT
-                            ? squareFootage * randomService.getBasePrice()
-                            : randomService.getBasePrice();
+
+                    double calculated =
+                            randomService.getPricingType() == PricingType.PER_SQFT
+                                    ? squareFootage * randomService.getBasePrice()
+                                    : randomService.getBasePrice();
+
                     if (calculated < randomService.getMinimumCharge()) {
                         calculated = randomService.getMinimumCharge();
                     }
+
                     job.setCalculatedQuote(calculated);
-                    job.setStatus(JobStatus.values()[random.nextInt(JobStatus.values().length)]);
-                    job.setRequestedDate(Instant.now().minusSeconds(random.nextInt(30 * 24 * 60 * 60)));
+                    job.setStatus(JobStatus.values()[
+                            random.nextInt(JobStatus.values().length)
+                    ]);
+
+                    job.setRequestedDate(
+                            Instant.now().minusSeconds(
+                                    random.nextInt(30 * 24 * 60 * 60)
+                            )
+                    );
+
                     job.setCompletedDate(null);
                     jobs.add(job);
                 }
+
                 address.setJobHistory(jobs);
                 addresses.add(address);
             }
+
             user.setAddresses(addresses);
             users.add(user);
         }
+
         return users;
     }
 }

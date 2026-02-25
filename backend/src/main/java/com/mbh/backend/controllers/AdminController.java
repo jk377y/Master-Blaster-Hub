@@ -13,81 +13,112 @@ import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
+// Handles admin-only operations like resets, user management, and reports
 public class AdminController {
+
     private final DatabaseResetService databaseResetService;
     private final UserRepository userRepository;
     private final PermissionServiceFactory permissionServiceFactory;
-    public AdminController(DatabaseResetService databaseResetService,
-        UserRepository userRepository, PermissionServiceFactory permissionServiceFactory) {
-            this.databaseResetService = databaseResetService;
-            this.userRepository = userRepository;
-            this.permissionServiceFactory = permissionServiceFactory;
-        }
+
+    // Injects required services and repositories
+    public AdminController(
+            DatabaseResetService databaseResetService,
+            UserRepository userRepository,
+            PermissionServiceFactory permissionServiceFactory) {
+        this.databaseResetService = databaseResetService;
+        this.userRepository = userRepository;
+        this.permissionServiceFactory = permissionServiceFactory;
+    }
+
+    // Resets the database if user has permission
     @PostMapping("/reset")
     public ResponseEntity<?> resetDatabase(Authentication authentication) {
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
         String currentUserEmail = authentication.getName();
         User currentUser = userRepository.findByEmail(currentUserEmail).orElse(null);
         if (currentUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
         PermissionService permissionService =
                 permissionServiceFactory.getPermissionService(currentUser);
+
         if (!permissionService.canResetDatabase(currentUser)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+
         databaseResetService.resetDatabase();
         return ResponseEntity.ok("Database reset successfully.");
     }
+
+    // Deletes a user if allowed by permission rules
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable String id, Authentication authentication) {
+    public ResponseEntity<?> deleteUser(
+            @PathVariable String id,
+            Authentication authentication) {
+
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
         String currentUserEmail = authentication.getName();
         User currentUser = userRepository.findByEmail(currentUserEmail).orElse(null);
         if (currentUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
         User targetUser = userRepository.findById(id).orElse(null);
         if (targetUser == null) {
             return ResponseEntity.notFound().build();
         }
+
         PermissionService permissionService =
                 permissionServiceFactory.getPermissionService(currentUser);
+
         if (!permissionService.canDeleteUser(currentUser, targetUser)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+
         userRepository.delete(targetUser);
         return ResponseEntity.ok("User deleted successfully.");
     }
+
+    // Searches customers with optional field filtering
     @GetMapping("/customers/search")
     public ResponseEntity<List<CustomerSearchResult>> searchCustomers(
             @RequestParam(required = false) String field,
             @RequestParam(required = false) String value,
             Authentication authentication) {
+
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
         String currentUserEmail = authentication.getName();
         User currentUser = userRepository.findByEmail(currentUserEmail).orElse(null);
         if (currentUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
         PermissionService permissionService =
                 permissionServiceFactory.getPermissionService(currentUser);
+
         if (!permissionService.canViewReports(currentUser)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+
         List<CustomerSearchResult> results = new ArrayList<>();
         List<User> users = userRepository.findAll();
+
         for (User user : users) {
             CustomerSearchResult row = new CustomerSearchResult(
                     user.getId(),
@@ -102,9 +133,12 @@ public class AdminController {
                     user.getIsActive(),
                     user.getCreatedAt()
             );
+
             boolean matches = true;
+
             if (field != null && value != null && !field.equalsIgnoreCase("all")) {
                 String lowerValue = value.toLowerCase();
+
                 switch (field.toLowerCase()) {
                     case "email":
                         matches = user.getEmail() != null &&
@@ -122,34 +156,44 @@ public class AdminController {
                         matches = true;
                 }
             }
+
             if (matches) {
                 results.add(row);
             }
         }
+
         return ResponseEntity.ok(results);
     }
+
+    // Updates selected customer fields
     @PatchMapping("/customers/{id}")
     public ResponseEntity<?> updateCustomer(
             @PathVariable String id,
             @RequestBody User updatedUser,
             Authentication authentication) {
+
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
         String currentUserEmail = authentication.getName();
         User currentUser = userRepository.findByEmail(currentUserEmail).orElse(null);
         if (currentUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
         PermissionService permissionService =
                 permissionServiceFactory.getPermissionService(currentUser);
+
         if (!permissionService.canViewReports(currentUser)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+
         User existing = userRepository.findById(id).orElse(null);
         if (existing == null) {
             return ResponseEntity.notFound().build();
         }
+
         if (updatedUser.getFirstName() != null) {
             existing.setFirstName(updatedUser.getFirstName());
         }
@@ -159,33 +203,44 @@ public class AdminController {
         if (updatedUser.getIsActive() != null) {
             existing.setIsActive(updatedUser.getIsActive());
         }
+
         userRepository.save(existing);
         return ResponseEntity.ok("Customer updated successfully.");
     }
+
+    // Searches job history across all users
     @GetMapping("/jobs/search")
     public ResponseEntity<List<JobSearchResult>> searchJobs(
-        @RequestParam(required = false) String field,
-        @RequestParam(required = false) String value,
-        Authentication authentication) {
+            @RequestParam(required = false) String field,
+            @RequestParam(required = false) String value,
+            Authentication authentication) {
+
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
         String currentUserEmail = authentication.getName();
         User currentUser = userRepository.findByEmail(currentUserEmail).orElse(null);
         if (currentUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
         PermissionService permissionService =
                 permissionServiceFactory.getPermissionService(currentUser);
+
         if (!permissionService.canViewReports(currentUser)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+
         List<JobSearchResult> results = new ArrayList<>();
         List<User> users = userRepository.findAll();
+
         for (User user : users) {
             if (user.getAddresses() == null) continue;
+
             for (Address address : user.getAddresses()) {
                 if (address.getJobHistory() == null) continue;
+
                 for (JobHistory job : address.getJobHistory()) {
                     JobSearchResult row = new JobSearchResult(
                             job.getId(),
@@ -200,9 +255,12 @@ public class AdminController {
                             job.getStatus(),
                             job.getRequestedDate()
                     );
+
                     boolean matches = true;
+
                     if (field != null && value != null && !field.equalsIgnoreCase("all")) {
                         String lowerValue = value.toLowerCase();
+
                         switch (field.toLowerCase()) {
                             case "city":
                                 matches = address.getCity() != null &&
@@ -224,12 +282,14 @@ public class AdminController {
                                 matches = true;
                         }
                     }
+
                     if (matches) {
                         results.add(row);
                     }
                 }
             }
         }
+
         return ResponseEntity.ok(results);
     }
 }

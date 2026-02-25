@@ -3,10 +3,12 @@ package com.mbh.backend.controllers;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
+// Exposes a simple endpoint to verify runtime config values
 public class ConfigCheckController {
 
     @Value("${app.config.loaded:no}")
@@ -18,6 +20,7 @@ public class ConfigCheckController {
     @Value("${spring.mongodb.database:NOT_SET}")
     private String mongoDb;
 
+    // Returns basic config info without exposing sensitive data
     @GetMapping("/api/config-check")
     public Map<String, String> check() {
         Map<String, String> res = new LinkedHashMap<>();
@@ -32,6 +35,7 @@ public class ConfigCheckController {
                 "other";
 
         res.put("spring.mongodb.uri", uriHint);
+
         return res;
     }
 }

@@ -1,6 +1,8 @@
 package com.mbh.backend.dto;
 
+// DTO for creating a new job request
 public class JobRequest {
+
     private String serviceId;
     private Double squareFootage;
 

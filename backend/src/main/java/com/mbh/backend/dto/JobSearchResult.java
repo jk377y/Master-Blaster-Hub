@@ -1,21 +1,28 @@
 package com.mbh.backend.dto;
 
 import com.mbh.backend.models.JobStatus;
+
 import java.time.Instant;
 
+// DTO for returning job search results in admin reports
 public class JobSearchResult {
+
     private String id;
-    private String firstName; //! Added firstName field
-    private String lastName; //! Added lastName field
+    private String firstName;
+    private String lastName;
     private String userEmail;
-    private String street; 
+    private String street;
     private String city;
     private String serviceName;
     private Double squareFootage;
     private Double calculatedQuote;
     private JobStatus status;
     private Instant requestedDate;
+
+    // Default constructor for serialization
     public JobSearchResult() {}
+
+    // Builds a single job row for search results
     public JobSearchResult(String id,
                            String firstName,
                            String lastName,
@@ -39,6 +46,7 @@ public class JobSearchResult {
         this.status = status;
         this.requestedDate = requestedDate;
     }
+
     public String getId() { return id; }
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }

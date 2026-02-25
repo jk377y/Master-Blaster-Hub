@@ -1,20 +1,23 @@
 package com.mbh.backend.dto;
 
 import com.mbh.backend.models.Role;
+
 import java.time.Instant;
 
+// DTO for returning customer search results
 public class CustomerSearchResult {
 
     private String id;
     private String email;
     private String firstName;
     private String lastName;
-    private String street; //! Added street field
-    private String city;   //! Added city field
+    private String street;
+    private String city;
     private Role role;
     private Boolean isActive;
     private Instant createdAt;
 
+    // Builds a single row for admin customer search
     public CustomerSearchResult(String id,
                                 String email,
                                 String firstName,

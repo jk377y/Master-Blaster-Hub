@@ -10,13 +10,13 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
+// Simple endpoint for verifying active MongoDB config
 public class DebugController {
-    @Value("${spring.mongodb.uri}")
-    private String dbUri;
 
     @Value("${spring.mongodb.database}")
     private String dbName;
 
+    // Returns basic database info for debugging
     @GetMapping("/debug")
     public Map<String, String> debug() {
         Map<String, String> res = new LinkedHashMap<>();

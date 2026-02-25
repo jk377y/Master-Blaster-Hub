@@ -1,29 +1,33 @@
 name: Deploy Frontend
 
+# Triggers only when frontend files change on working_branch
 on:
   push:
     branches:
       - working_branch
-    # paths:
-    #   - 'frontend/**'
-    #   - 'frontend/index.html'
+    paths:
+      - 'frontend/**'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # Pull repository code
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Install frontend dependencies
       - name: Install dependencies
         working-directory: frontend
         run: npm install
 
+      # Build production bundle
       - name: Build frontend
         working-directory: frontend
         run: npm run build
 
+      # Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -31,12 +35,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      # Upload build output to S3
       - name: Deploy to S3
         run: aws s3 sync frontend/dist s3://masterblasterhub.com --delete
 
+      # Clear CloudFront cache so new files are served
       - name: Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
-
