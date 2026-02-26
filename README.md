@@ -32,8 +32,10 @@ This application, **Master Blaster Hub**, is a full-stack system designed to man
 **Easy Access**
 
 Feel free to use the following test credentials for quick access to the customer portal:<br>
-<span style="color:#0ecfff">Email: </span><a style="color:white">customer@masterblasterhub.com</a><br>
-<span style="color:#0ecfff">Password: </span><span style="color:white">password</span> 
+| Credential | Value |
+|------------|--------|
+| **Email**      | `customer@masterblasterhub.com` |
+| **Password**   | `password` | 
 
 #### B. Accessing the Customer Portal
 
@@ -76,8 +78,10 @@ This is the main dashboard for managing account activity. From this page, users 
 **Easy Access**
 
 Feel free to use the following test credentials for quick access to the administrator portal:<br>
-<span style="color:#0ecfff">Email: </span><a style="color:white">admin@masterblasterhub.com</a><br>
-<span style="color:#0ecfff">Password: </span><span style="color:white">password</span>
+| Credential | Value |
+|------------|--------|
+| **Email**      | `admin@masterblasterhub.com` |
+| **Password**   | `password` |
 
 #### B. Accessing the Admin Dashboard
 
