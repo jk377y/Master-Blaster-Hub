@@ -76,6 +76,7 @@ Administrators have access to protected routes not available to customers. From 
 - Review service requests across the system.<br>
 - Update job statuses and generate pricing quotes when required.<br>
 - Perform system-level actions, such as database reset (if authorized).<br>
+- Export reports for analysis and record-keeping.<br>
 
 <img src="./frontend/src/assets/images/adminCustomerSearchPanel.PNG" width="500px" height="500px" alt="admin customer search panel"><br>
 <img src="./frontend/src/assets/images/adminServiceJobsSearchPanel.PNG" width="500px" height="250px" alt="admin service jobs search panel"><br>
