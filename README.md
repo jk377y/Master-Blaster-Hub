@@ -20,7 +20,7 @@ This application, **Master Blaster Hub Web Application**, is a full-stack web ap
 - Enter your email and password. New users must also provide their first and last name.<br>
 - After successful authentication, you will be redirected to your personal portal.<br>
 
-<img src="./frontend/src/assets/images/signupScreen.PNG" width="250px" height="250px" alt="signup screen"><img src="./frontend/src/assets/images/loginScreen.PNG" width="250px" height="250px" alt="login screen">
+<img src="./frontend/src/assets/images/signupScreen.PNG" width="250px" height="250px" alt="signup screen"><img src="./frontend/src/assets/images/temp1.PNG" width="250px" height="250px" alt="login screen">
 <br>
 
 **EASY ACCESS**<br>
@@ -59,7 +59,7 @@ This is the main dashboard for managing account activity. From this page, users 
 - Select Login and enter administrator credentials.<br>
 - After successful authentication, administrators can access both the customer-facing features and the administrative dashboard.<br>
 
-<img src="./frontend/src/assets/images/loginScreen2.PNG" width="250px" height="250px" alt="login screen with admin credentials"><br>
+<img src="./frontend/src/assets/images/temp2.PNG" width="250px" height="250px" alt="login screen with admin credentials"><br>
 <br>
 
 **EASY ACCESS**<br>
