@@ -29,9 +29,7 @@ This application, **Master Blaster Hub**, is a full-stack system designed to man
 <img src="./frontend/src/assets/images/signupScreen.PNG" width="250" alt="signup screen">
 <img src="./frontend/src/assets/images/loginScreen1.PNG" width="250" alt="login screen">
 
-**Easy Access**
-
-Feel free to use the following test credentials for quick access to the customer portal:<br>
+**Easy Access:** Feel free to use the following test credentials for quick access to the customer portal:<br>
 | Credential | Value |
 |------------|--------|
 | **Email**      | `customer@masterblasterhub.com` |
@@ -75,9 +73,7 @@ This is the main dashboard for managing account activity. From this page, users 
 
 <img src="./frontend/src/assets/images/loginScreen2.PNG" width="250" alt="login screen with admin credentials">
 
-**Easy Access**
-
-Feel free to use the following test credentials for quick access to the administrator portal:<br>
+**Easy Access:** Feel free to use the following test credentials for quick access to the administrator portal:<br>
 | Credential | Value |
 |------------|--------|
 | **Email**      | `admin@masterblasterhub.com` |
