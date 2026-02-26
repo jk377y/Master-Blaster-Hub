@@ -31,10 +31,9 @@ This application, **Master Blaster Hub**, is a full-stack system designed to man
 
 **Easy Access**
 
-Feel free to use the following test credentials for quick access to the customer portal:
-
-Email: customer@masterblasterhub.com  
-Password: password  
+Feel free to use the following test credentials for quick access to the customer portal:<br>
+<span style="color:#0ecfff">Email: </span><a style="color:white">customer@masterblasterhub.com</a><br>
+<span style="color:#0ecfff">Password: </span><span style="color:white">password</span> 
 
 #### B. Accessing the Customer Portal
 
@@ -48,10 +47,10 @@ This is the main dashboard for managing account activity. From this page, users 
 - View current and past job requests.
 - Review job details, including status updates and pricing information when available.
 
-<img src="./frontend/src/assets/images/customerAddAddressPanel.PNG" width="500" alt="customer add address panel">
-<img src="./frontend/src/assets/images/customerDeleteAddressPanel.PNG" width="500" alt="customer delete address panel">
-<img src="./frontend/src/assets/images/customerRequestServicePanel.PNG" width="500" alt="customer request service panel">
-<img src="./frontend/src/assets/images/customerCheckRequestStatusPanel.PNG" width="500" alt="customer check request status panel">
+<img src="./frontend/src/assets/images/customerAddAddressPanel.PNG" width="500" alt="customer add address panel"><br>
+<img src="./frontend/src/assets/images/customerDeleteAddressPanel.PNG" width="500" alt="customer delete address panel"><br>
+<img src="./frontend/src/assets/images/customerRequestServicePanel.PNG" width="500" alt="customer request service panel"><br>
+<img src="./frontend/src/assets/images/customerCheckRequestStatusPanel.PNG" width="500" alt="customer check request status panel"><br>
 
 #### C. Customer Responsibilities
 
@@ -76,10 +75,9 @@ This is the main dashboard for managing account activity. From this page, users 
 
 **Easy Access**
 
-Feel free to use the following test credentials for quick access to the administrator portal:
-
-Email: admin@masterblasterhub.com  
-Password: password  
+Feel free to use the following test credentials for quick access to the administrator portal:<br>
+<span style="color:#0ecfff">Email: </span><a style="color:white">admin@masterblasterhub.com</a><br>
+<span style="color:#0ecfff">Password: </span><span style="color:white">password</span>
 
 #### B. Accessing the Admin Dashboard
 
@@ -95,10 +93,10 @@ Administrators have access to protected routes not available to customers. From 
 - Perform system-level actions, such as database reset (if authorized).
 - Export reports for analysis and record-keeping.
 
-<img src="./frontend/src/assets/images/adminCustomerSearchPanel.PNG" width="500" alt="admin customer search panel">
-<img src="./frontend/src/assets/images/adminServiceJobsSearchPanel.PNG" width="500" alt="admin service jobs search panel">
-<img src="./frontend/src/assets/images/adminDatabaseResetPanel.PNG" width="500" alt="admin database reset panel">
-<img src="./frontend/src/assets/images/adminReportExportFeature.PNG" width="1000" alt="admin report export feature">
+<img src="./frontend/src/assets/images/adminCustomerSearchPanel.PNG" width="500" alt="admin customer search panel"><br>
+<img src="./frontend/src/assets/images/adminServiceJobsSearchPanel.PNG" width="500" alt="admin service jobs search panel"><br>
+<img src="./frontend/src/assets/images/adminDatabaseResetPanel.PNG" width="500" alt="admin database reset panel"><br>
+<img src="./frontend/src/assets/images/adminReportExportFeature.PNG" width="1000" alt="admin report export feature"><br>
 
 #### C. Admin Responsibilities
 
