@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -42,8 +43,8 @@ public class UserController {
 
     // Adds a new address to the current user
     @PostMapping("/address")
-    public User addAddress(@RequestBody Address newAddress,
-                           Authentication authentication) {
+    public ResponseEntity<?> addAddress(@RequestBody Address newAddress,
+                                        Authentication authentication) {
 
         String email = authentication.getName();
         User user = userRepository.findByEmail(email)
@@ -56,13 +57,17 @@ public class UserController {
         }
 
         user.getAddresses().add(newAddress);
-        return userRepository.save(user);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(
+                Map.of("message", "Address added successfully.")
+        );
     }
 
     // Marks an address as inactive
     @PatchMapping("/address/{addressId}/deactivate")
-    public User deactivateAddress(@PathVariable String addressId,
-                                  Authentication authentication) {
+    public ResponseEntity<?> deactivateAddress(@PathVariable String addressId,
+                                               Authentication authentication) {
 
         String email = authentication.getName();
         User user = userRepository.findByEmail(email)
@@ -76,7 +81,11 @@ public class UserController {
             });
         }
 
-        return userRepository.save(user);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(
+                Map.of("message", "Address deactivated successfully.")
+        );
     }
 
     // Creates a new job request for a specific address
@@ -115,7 +124,9 @@ public class UserController {
         address.getJobHistory().add(job);
         userRepository.save(user);
 
-        return ResponseEntity.ok("Service request submitted.");
+        return ResponseEntity.ok(
+                Map.of("message", "Service request submitted.")
+        );
     }
 
     // Returns only active services

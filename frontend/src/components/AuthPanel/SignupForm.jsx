@@ -62,8 +62,13 @@ export const SignupForm = ({ onSwitch, onLogin }) => {
             navigate("/myportal");
         } catch (err) {
             if (err.status === 409) {
-                setError("An account with this email already exists.");
-            } else {
+                setError(err.message);
+            }
+            else if (err.status === 400 && err.data && typeof err.data === "object") {
+                const firstError = Object.values(err.data)[0];
+                setError(firstError);
+            }
+            else {
                 setError("Unable to create account. Please try again.");
             }
         } finally {

@@ -3,10 +3,11 @@ package com.mbh.backend.controllers;
 import com.mbh.backend.models.*;
 import com.mbh.backend.repositories.ServiceRepository;
 import com.mbh.backend.repositories.UserRepository;
-import com.mbh.backend.services.PermissionServiceFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/jobs")
@@ -16,9 +17,8 @@ public class JobController {
     private final UserRepository userRepository;
     private final ServiceRepository serviceRepository;
 
-    // Injects required repositories and services
+    // Injects required repositories
     public JobController(UserRepository userRepository,
-                         PermissionServiceFactory permissionServiceFactory,
                          ServiceRepository serviceRepository) {
         this.userRepository = userRepository;
         this.serviceRepository = serviceRepository;
@@ -31,7 +31,8 @@ public class JobController {
                                              Authentication authentication) {
 
         if (authentication == null) {
-            return ResponseEntity.status(401).build();
+            return ResponseEntity.status(401)
+                    .body(Map.of("message", "Unauthorized."));
         }
 
         User currentUser = userRepository
@@ -39,7 +40,8 @@ public class JobController {
                 .orElse(null);
 
         if (currentUser == null) {
-            return ResponseEntity.status(401).build();
+            return ResponseEntity.status(401)
+                    .body(Map.of("message", "Unauthorized."));
         }
 
         for (User user : userRepository.findAll()) {
@@ -54,7 +56,7 @@ public class JobController {
                         if (currentUser.getRole() == Role.CUSTOMER &&
                                 !user.getId().equals(currentUser.getId())) {
                             return ResponseEntity.status(403)
-                                    .body("Cannot modify another user's job.");
+                                    .body(Map.of("message", "Cannot modify another user's job."));
                         }
 
                         if (!isTransitionAllowed(
@@ -62,7 +64,7 @@ public class JobController {
                                 newStatus,
                                 currentUser.getRole())) {
                             return ResponseEntity.status(403)
-                                    .body("Invalid status transition.");
+                                    .body(Map.of("message", "Invalid status transition."));
                         }
 
                         if (newStatus == JobStatus.QUOTED) {
@@ -100,13 +102,17 @@ public class JobController {
                         }
 
                         userRepository.save(user);
-                        return ResponseEntity.ok("Job status updated.");
+
+                        return ResponseEntity.ok(
+                                Map.of("message", "Job status updated.")
+                        );
                     }
                 }
             }
         }
 
-        return ResponseEntity.badRequest().body("Job not found.");
+        return ResponseEntity.badRequest()
+                .body(Map.of("message", "Job not found."));
     }
 
     // Validates allowed job status transitions by role

@@ -1,9 +1,8 @@
 // Centralized API wrapper for all backend requests.
 // Automatically attaches base URL and auth token.
-import { getToken } from "../utils/auth";
+import { getToken } from '../utils/auth';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 
 // Wrapper around fetch with default headers + error handling.
 export async function apiFetch(path, options = {}) {
@@ -16,13 +15,24 @@ export async function apiFetch(path, options = {}) {
         ...options
     });
 
-    // Normalize non-2xx responses into thrown errors
+    const contentType = response.headers.get("content-type");
+
+    let data = null;
+
+    if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+    } else {
+        data = await response.text();
+    }
+
     if (!response.ok) {
-        const errorText = await response.text();
-        const error = new Error(errorText || "API Error");
+        const error = new Error(
+            typeof data === "string" ? data : data?.message || "API Error"
+        );
         error.status = response.status;
+        error.data = data;
         throw error;
     }
 
-    return response;
+    return data;
 }

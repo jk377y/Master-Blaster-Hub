@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.Map;
 
 @RestController
@@ -37,13 +38,15 @@ public class AuthController {
         var userOptional = userRepository.findByEmail(request.getEmail());
 
         if (userOptional.isEmpty()) {
-            return ResponseEntity.status(401).body("Invalid credentials");
+            return ResponseEntity.status(401)
+                    .body(Map.of("message", "Invalid credentials"));
         }
 
         User user = userOptional.get();
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            return ResponseEntity.status(401).body("Invalid credentials");
+            return ResponseEntity.status(401)
+                    .body(Map.of("message", "Invalid credentials"));
         }
 
         String token = jwtUtil.generateToken(
@@ -74,7 +77,7 @@ public class AuthController {
             user.setRole(com.mbh.backend.models.Role.CUSTOMER);
             user.setIsActive(true);
             user.setIsSystemAccount(false);
-            user.setCreatedAt(java.time.Instant.now());
+            user.setCreatedAt(Instant.now());
 
             userRepository.save(user);
 
@@ -84,12 +87,14 @@ public class AuthController {
                     user.getFirstName()
             );
 
-            return ResponseEntity.ok(Map.of("token", token));
+            return ResponseEntity.ok(
+                    Map.of("token", token)
+            );
 
         } catch (DuplicateKeyException ex) {
             return ResponseEntity
                     .status(409)
-                    .body("Email already in use");
+                    .body(Map.of("message", "Email already in use"));
         }
     }
 }

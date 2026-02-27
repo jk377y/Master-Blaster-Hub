@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -39,25 +40,32 @@ public class AdminController {
     // Resets the database if user has permission
     @PostMapping("/reset")
     public ResponseEntity<?> resetDatabase(Authentication authentication) {
+
         if (authentication == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Unauthorized."));
         }
 
         String currentUserEmail = authentication.getName();
         User currentUser = userRepository.findByEmail(currentUserEmail).orElse(null);
+
         if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Unauthorized."));
         }
 
         PermissionService permissionService =
                 permissionServiceFactory.getPermissionService(currentUser);
 
         if (!permissionService.canResetDatabase(currentUser)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "Forbidden."));
         }
 
         databaseResetService.resetDatabase();
-        return ResponseEntity.ok("Database reset successfully.");
+        return ResponseEntity.ok(
+                Map.of("message", "Database reset successfully.")
+        );
     }
 
     // Deletes a user if allowed by permission rules
@@ -67,59 +75,71 @@ public class AdminController {
             Authentication authentication) {
 
         if (authentication == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Unauthorized."));
         }
 
         String currentUserEmail = authentication.getName();
         User currentUser = userRepository.findByEmail(currentUserEmail).orElse(null);
+
         if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Unauthorized."));
         }
 
         User targetUser = userRepository.findById(id).orElse(null);
         if (targetUser == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "User not found."));
         }
 
         PermissionService permissionService =
                 permissionServiceFactory.getPermissionService(currentUser);
 
         if (!permissionService.canDeleteUser(currentUser, targetUser)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "Forbidden."));
         }
 
         userRepository.delete(targetUser);
-        return ResponseEntity.ok("User deleted successfully.");
+        return ResponseEntity.ok(
+                Map.of("message", "User deleted successfully.")
+        );
     }
 
     // Searches customers with optional field filtering
     @GetMapping("/customers/search")
-    public ResponseEntity<List<CustomerSearchResult>> searchCustomers(
+    public ResponseEntity<?> searchCustomers(
             @RequestParam(required = false) String field,
             @RequestParam(required = false) String value,
             Authentication authentication) {
 
         if (authentication == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Unauthorized."));
         }
 
         String currentUserEmail = authentication.getName();
         User currentUser = userRepository.findByEmail(currentUserEmail).orElse(null);
+
         if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Unauthorized."));
         }
 
         PermissionService permissionService =
                 permissionServiceFactory.getPermissionService(currentUser);
 
         if (!permissionService.canViewReports(currentUser)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "Forbidden."));
         }
 
         List<CustomerSearchResult> results = new ArrayList<>();
         List<User> users = userRepository.findAll();
 
         for (User user : users) {
+
             CustomerSearchResult row = new CustomerSearchResult(
                     user.getId(),
                     user.getEmail(),
@@ -140,20 +160,16 @@ public class AdminController {
                 String lowerValue = value.toLowerCase();
 
                 switch (field.toLowerCase()) {
-                    case "email":
-                        matches = user.getEmail() != null &&
-                                user.getEmail().toLowerCase().contains(lowerValue);
-                        break;
-                    case "lastname":
-                        matches = user.getLastName() != null &&
-                                user.getLastName().toLowerCase().contains(lowerValue);
-                        break;
-                    case "role":
-                        matches = user.getRole() != null &&
-                                user.getRole().name().toLowerCase().contains(lowerValue);
-                        break;
-                    default:
-                        matches = true;
+                    case "email" ->
+                            matches = user.getEmail() != null &&
+                                    user.getEmail().toLowerCase().contains(lowerValue);
+                    case "lastname" ->
+                            matches = user.getLastName() != null &&
+                                    user.getLastName().toLowerCase().contains(lowerValue);
+                    case "role" ->
+                            matches = user.getRole() != null &&
+                                    user.getRole().name().toLowerCase().contains(lowerValue);
+                    default -> matches = true;
                 }
             }
 
@@ -173,25 +189,30 @@ public class AdminController {
             Authentication authentication) {
 
         if (authentication == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Unauthorized."));
         }
 
         String currentUserEmail = authentication.getName();
         User currentUser = userRepository.findByEmail(currentUserEmail).orElse(null);
+
         if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Unauthorized."));
         }
 
         PermissionService permissionService =
                 permissionServiceFactory.getPermissionService(currentUser);
 
         if (!permissionService.canViewReports(currentUser)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "Forbidden."));
         }
 
         User existing = userRepository.findById(id).orElse(null);
         if (existing == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "User not found."));
         }
 
         if (updatedUser.getFirstName() != null) {
@@ -205,31 +226,37 @@ public class AdminController {
         }
 
         userRepository.save(existing);
-        return ResponseEntity.ok("Customer updated successfully.");
+        return ResponseEntity.ok(
+                Map.of("message", "Customer updated successfully.")
+        );
     }
 
     // Searches job history across all users
     @GetMapping("/jobs/search")
-    public ResponseEntity<List<JobSearchResult>> searchJobs(
+    public ResponseEntity<?> searchJobs(
             @RequestParam(required = false) String field,
             @RequestParam(required = false) String value,
             Authentication authentication) {
 
         if (authentication == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Unauthorized."));
         }
 
         String currentUserEmail = authentication.getName();
         User currentUser = userRepository.findByEmail(currentUserEmail).orElse(null);
+
         if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Unauthorized."));
         }
 
         PermissionService permissionService =
                 permissionServiceFactory.getPermissionService(currentUser);
 
         if (!permissionService.canViewReports(currentUser)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "Forbidden."));
         }
 
         List<JobSearchResult> results = new ArrayList<>();
@@ -242,6 +269,7 @@ public class AdminController {
                 if (address.getJobHistory() == null) continue;
 
                 for (JobHistory job : address.getJobHistory()) {
+
                     JobSearchResult row = new JobSearchResult(
                             job.getId(),
                             user.getFirstName(),
@@ -262,24 +290,19 @@ public class AdminController {
                         String lowerValue = value.toLowerCase();
 
                         switch (field.toLowerCase()) {
-                            case "city":
-                                matches = address.getCity() != null &&
-                                        address.getCity().toLowerCase().contains(lowerValue);
-                                break;
-                            case "servicename":
-                                matches = job.getServiceNameSnapshot() != null &&
-                                        job.getServiceNameSnapshot().toLowerCase().contains(lowerValue);
-                                break;
-                            case "status":
-                                matches = job.getStatus() != null &&
-                                        job.getStatus().name().toLowerCase().contains(lowerValue);
-                                break;
-                            case "email":
-                                matches = user.getEmail() != null &&
-                                        user.getEmail().toLowerCase().contains(lowerValue);
-                                break;
-                            default:
-                                matches = true;
+                            case "city" ->
+                                    matches = address.getCity() != null &&
+                                            address.getCity().toLowerCase().contains(lowerValue);
+                            case "servicename" ->
+                                    matches = job.getServiceNameSnapshot() != null &&
+                                            job.getServiceNameSnapshot().toLowerCase().contains(lowerValue);
+                            case "status" ->
+                                    matches = job.getStatus() != null &&
+                                            job.getStatus().name().toLowerCase().contains(lowerValue);
+                            case "email" ->
+                                    matches = user.getEmail() != null &&
+                                            user.getEmail().toLowerCase().contains(lowerValue);
+                            default -> matches = true;
                         }
                     }
 

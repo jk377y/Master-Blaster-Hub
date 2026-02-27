@@ -12,34 +12,32 @@ import styles from "./Admin.module.css";
 
 export const Admin = ({ user }) => {
 
-    // View + UI state
+    // ===== VIEW + UI STATE =====
     const [isResetting, setIsResetting] = useState(false);
     const [activeView, setActiveView] = useState(null); // null | "customers" | "search" | "reset"
     const [toastMessage, setToastMessage] = useState(null);
 
-    // Customer search state
+    // ===== CUSTOMER SEARCH STATE =====
     const [customerField, setCustomerField] = useState("all");
     const [customerValue, setCustomerValue] = useState("");
     const [customerResults, setCustomerResults] = useState([]);
     const [isSearchingCustomers, setIsSearchingCustomers] = useState(false);
     const [editingCustomerId, setEditingCustomerId] = useState(null);
 
-    // Job search state
+    // ===== JOB SEARCH STATE =====
     const [jobResults, setJobResults] = useState([]);
     const [jobField, setJobField] = useState("all");
     const [jobValue, setJobValue] = useState("");
     const [isSearchingJobs, setIsSearchingJobs] = useState(false);
 
-    // Inline customer edit form state
+    // ===== INLINE EDIT STATE =====
     const [editForm, setEditForm] = useState({
         firstName: "",
         lastName: "",
         isActive: true
     });
 
-    const [reportData, setReportData] = useState(null);
-
-    // Handles full database reset
+    // ===== DATABASE RESET =====
     const handleDatabaseReset = async () => {
         const confirmReset = window.confirm(
             "This will completely wipe and rebuild the database.\n\nAre you sure?"
@@ -50,27 +48,25 @@ export const Admin = ({ user }) => {
 
         try {
             setIsResetting(true);
-            const message = await resetDatabase();
 
-            // Small delay to ensure visible feedback
+            const result = await resetDatabase();
+
+            // Ensure visible feedback duration
             const elapsed = Date.now() - startTime;
-            const remaining = 1000 - elapsed;
-            if (remaining > 0) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, remaining)
-                );
+            if (elapsed < 1000) {
+                await new Promise(res => setTimeout(res, 1000 - elapsed));
             }
 
-            setToastMessage(message);
+            setToastMessage(result?.message || "Database reset successfully.");
         } catch (error) {
-            console.error("Error resetting database:", error);
-            setToastMessage("Database reset failed.");
+            console.error("Reset error:", error);
+            setToastMessage(error?.message || "Database reset failed.");
         } finally {
             setIsResetting(false);
         }
     };
 
-    // Executes customer search
+    // ===== CUSTOMER SEARCH =====
     const handleCustomerSearch = async () => {
         try {
             setIsSearchingCustomers(true);
@@ -80,28 +76,26 @@ export const Admin = ({ user }) => {
                 customerValue
             );
 
-            setCustomerResults(results);
-        } catch (err) {
-            console.error("Customer search failed:", err);
-            setToastMessage("Customer search failed.");
+            setCustomerResults(results || []);
+        } catch (error) {
+            setToastMessage(error?.message || "Customer search failed.");
         } finally {
             setIsSearchingCustomers(false);
         }
     };
 
-    // Saves edited customer
+    // ===== SAVE CUSTOMER EDIT =====
     const handleSaveCustomer = async (customerId) => {
         try {
-            const message = await updateCustomer(customerId, editForm);
-            setToastMessage(message);
+            const result = await updateCustomer(customerId, editForm);
+            setToastMessage(result?.message || "Customer updated successfully.");
             await handleCustomerSearch();
             setEditingCustomerId(null);
-        } catch {
-            setToastMessage("Update failed.");
+        } catch (error) {
+            setToastMessage(error?.message || "Update failed.");
         }
     };
 
-    // Enables inline editing
     const handleEditCustomer = (customer) => {
         setEditingCustomerId(customer.id);
         setEditForm({
@@ -111,7 +105,7 @@ export const Admin = ({ user }) => {
         });
     };
 
-    // Executes job search
+    // ===== JOB SEARCH =====
     const handleJobSearch = async () => {
         try {
             setIsSearchingJobs(true);
@@ -121,58 +115,55 @@ export const Admin = ({ user }) => {
                 jobValue
             );
 
-            setJobResults(results);
-        } catch {
-            setToastMessage("Job search failed.");
+            setJobResults(results || []);
+        } catch (error) {
+            setToastMessage(error?.message || "Job search failed.");
         } finally {
             setIsSearchingJobs(false);
         }
     };
 
-    // Updates job status
+    // ===== JOB STATUS UPDATE =====
     const handleJobStatusUpdate = async (jobId, newStatus) => {
         try {
-            const message = await updateJobStatus(jobId, newStatus);
-            setToastMessage(message);
+            const result = await updateJobStatus(jobId, newStatus);
+            setToastMessage(result?.message || "Status updated.");
             await handleJobSearch();
-        } catch {
-            setToastMessage("Status update failed.");
+        } catch (error) {
+            setToastMessage(error?.message || "Status update failed.");
         }
     };
 
-    // Refreshes job results
     const handleRefreshJobs = async () => {
         try {
             await handleJobSearch();
             setToastMessage("Status refreshed.");
-        } catch {
-            setToastMessage("Refresh failed.");
+        } catch (error) {
+            setToastMessage(error?.message || "Refresh failed.");
         }
     };
 
-    // Maps job status to styling class
+    // ===== STATUS STYLING =====
     const getStatusClass = (status) => {
         switch (status) {
             case "REQUESTED":
             case "QUOTED":
                 return styles.statusPending;
-
             case "APPROVED":
             case "COMPLETED":
                 return styles.statusSuccess;
-
             case "DECLINED":
             case "CANCELLED":
                 return styles.statusDanger;
-
             default:
                 return "";
         }
     };
 
-    // Exports current view results as CSV
+    // ===== CSV EXPORT (HARDENED) =====
     const handleExportCSV = () => {
         const timestamp = new Date().toLocaleString();
+
         let title = "";
         let columns = [];
         let rows = [];
@@ -211,19 +202,25 @@ export const Admin = ({ user }) => {
 
         if (rows.length === 0) return;
 
+        const safe = (val) =>
+            `"${String(val ?? "").replace(/"/g, '""')}"`;
+
         const csvContent = [
             "Master Blaster Hub",
             title.replace(/_/g, " "),
             `Generated: ${timestamp}`,
             "",
-            columns.join(","),
-            ...rows.map(row => row.join(","))
+            columns.map(safe).join(","),
+            ...rows.map(row => row.map(safe).join(","))
         ].join("\n");
 
-        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
+        const blob = new Blob([csvContent], {
+            type: "text/csv;charset=utf-8;"
+        });
 
+        const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
+
         link.href = url;
         link.download = `${title}_${Date.now()}.csv`;
         link.click();
@@ -231,17 +228,14 @@ export const Admin = ({ user }) => {
         URL.revokeObjectURL(url);
     };
 
-    // Auto-clears toast messages
+    // ===== TOAST AUTO CLEAR =====
     useEffect(() => {
         if (!toastMessage) return;
-
-        const timer = setTimeout(() => {
-            setToastMessage(null);
-        }, 2000);
-
+        const timer = setTimeout(() => setToastMessage(null), 2000);
         return () => clearTimeout(timer);
     }, [toastMessage]);
 
+    // ===== EARLY RETURN =====
     if (!user) {
         return (
             <div className={styles.adminContainer}>

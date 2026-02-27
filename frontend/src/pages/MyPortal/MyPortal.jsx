@@ -66,13 +66,13 @@ export const MyPortal = ({ user }) => {
     // Update job status (approve / decline)
     const handleJobStatusUpdate = async (jobId, newStatus) => {
         try {
-            const message = await updateJobStatus(jobId, newStatus);
-            setToastMessage(message);
+            const result = await updateJobStatus(jobId, newStatus);
+            setToastMessage(result?.message || "Status updated.");
 
             const refreshed = await fetchCurrentUser();
             setDbUser(refreshed);
-        } catch {
-            setToastMessage("Status update failed.");
+        } catch (err) {
+            setToastMessage(err?.message || "Status update failed.");
         }
     };
 
@@ -82,8 +82,8 @@ export const MyPortal = ({ user }) => {
             const refreshed = await fetchCurrentUser();
             setDbUser(refreshed);
             setToastMessage("Status refreshed.");
-        } catch {
-            setToastMessage("Refresh failed.");
+        } catch (err) {
+            setToastMessage(err?.message || "Refresh failed.");
         }
     };
 
@@ -112,8 +112,8 @@ export const MyPortal = ({ user }) => {
             try {
                 const data = await fetchCurrentUser();
                 setDbUser(data);
-            } catch {
-                setError("Failed to load user data.");
+            } catch (err) {
+                setError(err?.message || "Failed to load user data.");
             } finally {
                 setLoadingUser(false);
             }
@@ -141,8 +141,8 @@ export const MyPortal = ({ user }) => {
             try {
                 const data = await fetchServices();
                 setServices(data);
-            } catch {
-                setToastMessage("Failed to load services.");
+            } catch (err) {
+                setToastMessage(err?.message || "Failed to load services.");
             }
         }
 
