@@ -123,15 +123,22 @@ export const App = () => {
             {/* Global header */}
             <Header user={user} onLogout={handleLogout} />
 
+            <div className="modalSection">
+                <h2>Thank you for visiting my capstone page.</h2>
+                <h2>I am taking this project offline due to no longer needing it to be publicly accessible.</h2>
+                <h2>If you would like to see the project, please reach out to me directly.</h2>
+                <h2>jk377y@gmail.com</h2>
+            </div>
+
             {/* Application routes */}
             <Routes>
 
                 <Route path="/"
                     element={<Homepage user={user}
-                    setUser={setUser}
-                    sessionExpired={sessionExpired}
-                    clearSessionExpired={
-                        () => setSessionExpired(false)} />}
+                        setUser={setUser}
+                        sessionExpired={sessionExpired}
+                        clearSessionExpired={
+                            () => setSessionExpired(false)} />}
                 />
 
                 <Route path="/myportal"
