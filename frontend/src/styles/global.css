@@ -119,8 +119,8 @@ p {
 /* ============================= */
 .modalSection {
 	z-index: 9999;
-	background: rgba(83, 83, 83, 0.308);
-	position: absolute;
+	background: rgba(83, 83, 83, 0.5);
+	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
