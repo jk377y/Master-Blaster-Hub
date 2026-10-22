@@ -1,7 +1,9 @@
 # WGU D424 Software Engineering Capstone
 ## Master Blaster Hub Web Application
 
-Live URL: https://www.masterblasterhub.com/
+~~Live URL: https://www.masterblasterhub.com/~~<br>
+This project is no longer maintained.<br>
+You can view it's archived video at https://youtu.be/S8o_CBVlOTc
 
 **By:** James Kelly  
 **Student ID:** 011500695  
